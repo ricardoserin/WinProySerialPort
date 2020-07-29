@@ -46,7 +46,7 @@ namespace winproySerialPort
         {
             try
             {
-                puerto = new SerialPort(NombrePuerto, 100, Parity.Even, 8, StopBits.Two);
+                puerto = new SerialPort(NombrePuerto, 4800, Parity.Even, 8, StopBits.Two);
                 puerto.ReceivedBytesThreshold = 1024;
                 puerto.DataReceived += new SerialDataReceivedEventHandler(puerto_DataReceived);
                 puerto.Open();
@@ -54,7 +54,7 @@ namespace winproySerialPort
             catch(UnauthorizedAccessException e)
             {
                 MessageBox.Show("El puerto COM1 está siendo utilizado, ahora se utilizará el puerto al COM2");
-                puerto = new SerialPort("COM2", 100, Parity.Even, 8, StopBits.Two);
+                puerto = new SerialPort("COM2", 4800, Parity.Even, 8, StopBits.Two);
                 puerto.ReceivedBytesThreshold = 1024;
                 puerto.DataReceived += new SerialDataReceivedEventHandler(puerto_DataReceived);
                 puerto.Open();

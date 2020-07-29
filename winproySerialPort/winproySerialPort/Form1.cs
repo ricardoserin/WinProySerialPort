@@ -13,6 +13,10 @@ namespace winproySerialPort
     public partial class Form1 : Form
     {
         classTransRecep objTxRx;
+        delegate void MostrarOtroProceso(string mensaje);
+        //declaramos el delegado
+        MostrarOtroProceso delegadoMostrar;
+
 
         public Form1()
         {
@@ -32,11 +36,20 @@ namespace winproySerialPort
             objTxRx.Inicializa("COM1");
             objTxRx.LlegoMensaje += new classTransRecep.HandlerTxRx(objTxRx_LlegoMensaje);
 
+            //instanciamos al delegado
+            delegadoMostrar = new MostrarOtroProceso(MostrandoMensaje);
         }
 
         private void objTxRx_LlegoMensaje(object o, string mm)
         {
-            MessageBox.Show("En usuario, se disparó: " + mm);
+            //MessageBox.Show("En usuario, se disparó: " + mm);
+            //invocamos al delegado
+            Invoke(delegadoMostrar, mm);
+        }
+
+        private void MostrandoMensaje(string textMens)
+        {
+            rchConversacion.Text += "\n" + textMens;
         }
 
         private void btnRecibir_Click(object sender, EventArgs e)
