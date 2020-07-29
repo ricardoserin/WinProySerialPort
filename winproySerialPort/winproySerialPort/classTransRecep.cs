@@ -16,19 +16,25 @@ namespace winproySerialPort
         public event HandlerTxRx LlegoMensaje;
 
         Thread procesoEnvio;
+        Thread procesoVerificaSalida;
         private SerialPort puerto;
         private string mensajeEnviar;
         private string mensRecibido;
 
+        private Boolean BufferSalidaVacio;
+
         byte[] TramaEnvio;
         byte[] TramaCabeceraEnvio;
         byte[] TramaRelleno;
+        byte[] TramaRecibida;
 
         public classTransRecep()
         {
             TramaEnvio = new byte[1024];
             TramaCabeceraEnvio = new byte[5];
             TramaRelleno = new byte[1024];
+
+            TramaRecibida = new byte[1024];
 
             for (int i=0; i<1024; i++)
             {
@@ -40,7 +46,7 @@ namespace winproySerialPort
         {
             try
             {
-                puerto = new SerialPort(NombrePuerto, 57600, Parity.Even, 8, StopBits.Two);
+                puerto = new SerialPort(NombrePuerto, 100, Parity.Even, 8, StopBits.Two);
                 puerto.ReceivedBytesThreshold = 1024;
                 puerto.DataReceived += new SerialDataReceivedEventHandler(puerto_DataReceived);
                 puerto.Open();
@@ -48,7 +54,7 @@ namespace winproySerialPort
             catch(UnauthorizedAccessException e)
             {
                 MessageBox.Show("El puerto COM1 está siendo utilizado, ahora se utilizará el puerto al COM2");
-                puerto = new SerialPort("COM2", 57600, Parity.Even, 8, StopBits.Two);
+                puerto = new SerialPort("COM2", 100, Parity.Even, 8, StopBits.Two);
                 puerto.ReceivedBytesThreshold = 1024;
                 puerto.DataReceived += new SerialDataReceivedEventHandler(puerto_DataReceived);
                 puerto.Open();
@@ -57,17 +63,29 @@ namespace winproySerialPort
             {
                 
             }
-                
-
-
+            BufferSalidaVacio = true;
+            procesoVerificaSalida = new Thread(VerificandoSalida);
+            procesoVerificaSalida.Start();
             MessageBox.Show("Apertura del puerto " + puerto.PortName);
         }
 
         private void puerto_DataReceived(object o, SerialDataReceivedEventArgs a)
         {
             //MessageBox.Show("Se disparó el evento de recepción.");
-            mensRecibido = puerto.ReadExisting();
-            OnLlegoMensaje();
+            //mensRecibido = puerto.ReadExisting();
+            if(puerto.BytesToRead >=1024)
+            {
+                puerto.Read(TramaRecibida, 0, 1024);
+                
+                string CabRec = ASCIIEncoding.UTF8.GetString(TramaRecibida, 0, 5);
+                int LongMensRec = Convert.ToInt16(CabRec);
+
+                mensRecibido = ASCIIEncoding.UTF8.GetString(TramaRecibida, 5, LongMensRec);
+
+                OnLlegoMensaje();
+            }
+
+            
             //MessageBox.Show(mensRecibido);
         }
 
@@ -127,6 +145,29 @@ namespace winproySerialPort
             MessageBox.Show(mensRecibido);
         }
 
+        private void VerificandoSalida()
+        {
+            while (true)
+            {
+                if(puerto.BytesToWrite > 0)
+                {
+                    BufferSalidaVacio = false;
+                }
+                else
+                {
+                    BufferSalidaVacio = true;
+                }
+            }
+        }
 
+        public int BytesPorSalir()
+        {
+            int cantBytes = 0;
+            if(BufferSalidaVacio == false)
+            {
+                cantBytes = puerto.BytesToWrite;
+            }
+            return cantBytes;
+        }
     }
 }

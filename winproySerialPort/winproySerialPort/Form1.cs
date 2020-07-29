@@ -41,7 +41,8 @@ namespace winproySerialPort
 
         private void btnRecibir_Click(object sender, EventArgs e)
         {
-            objTxRx.Recibir();
+            //objTxRx.Recibir();
+            MessageBox.Show("Faltan por salir a enviar: " + objTxRx.BytesPorSalir().ToString());
         }
 
         
