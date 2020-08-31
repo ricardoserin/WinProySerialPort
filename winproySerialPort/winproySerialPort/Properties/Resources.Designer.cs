@@ -63,6 +63,16 @@ namespace winproySerialPort.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap clip {
+            get {
+                object obj = ResourceManager.GetObject("clip", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap send_icon_solid_01 {
             get {
                 object obj = ResourceManager.GetObject("send-icon-solid-01", resourceCulture);

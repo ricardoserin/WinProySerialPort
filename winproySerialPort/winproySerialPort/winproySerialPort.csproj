@@ -94,5 +94,8 @@
   <ItemGroup>
     <None Include="Resources\send-icon-solid-01.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clip.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
