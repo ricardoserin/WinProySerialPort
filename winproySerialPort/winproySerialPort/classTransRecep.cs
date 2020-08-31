@@ -292,27 +292,17 @@ namespace winproySerialPort
             contArchivos += 1;
             //-MessageBox.Show("Se enviará: " + '\n' + archivoEnviar.Nombre+'\n' + archivoEnviar.Tamaño+ '\n' + archivoEnviar.Id);
 
-            procesoEnvioArchivo = new Thread(EnviandoArchivo);
+            procesoEnvioArchivo = new Thread(EnviandoInfoArchivo);
             procesoEnvioArchivo.Start();
         }
-
-        private void EnviandoArchivo()
+        private void EnviandoInfoArchivo()
         {
-            byte[] TramaEnvioArchivo; //se ejecuta una sola vez
-            byte[] TramaInfoArchivo;
-            byte[] TramaCabeceraEnvioArchivo; //se ejecuta una sola vez
-            byte[] TramaCabeceraInfoArchivo;
+            byte[] TramaInfoArchivo = new byte [1019];
+            byte[] TramaCabeceraInfoArchivo = new byte[5];
 
-            TramaEnvioArchivo = new byte[1019];
-            TramaCabeceraEnvioArchivo = new byte[5];
-            TramaCabeceraInfoArchivo = new byte[5];
-            TramaInfoArchivo = new byte[1019];
-            //enviar la primera trama con el nbombre archivo
             TramaCabeceraInfoArchivo = ASCIIEncoding.UTF8.GetBytes("AI001");
-            
-            //-MessageBox.Show("Enviando trama con información del archivo");
-            //ENVIAR TRAMA DE INFORMACIÓN
-            TramaInfoArchivo = ASCIIEncoding.UTF8.GetBytes(archivoEnviar.Nombre + '?' + archivoEnviar.Tipo + '?' + archivoEnviar.Extension + '?' + archivoEnviar.Tamano);
+            //TramaInfoArchivo = ASCIIEncoding.UTF8.GetBytes(archivoEnviar.Nombre + '?' + archivoEnviar.Tipo + '?' + archivoEnviar.Extension + '?' + archivoEnviar.Tamano);
+            TramaInfoArchivo = ASCIIEncoding.UTF8.GetBytes("prueba prueba prueba");
             while (BufferSalidaVacio == false)
             {
                 //esperamos
@@ -323,8 +313,26 @@ namespace winproySerialPort
             BufferSalidaVacio = false;
             puerto.Write(TramaRelleno, 0, 1019 - TramaInfoArchivo.Length);
             BufferSalidaVacio = false;
+            MessageBox.Show(ASCIIEncoding.UTF8.GetString(TramaCabeceraInfoArchivo) + ASCIIEncoding.UTF8.GetString(TramaInfoArchivo));
+            procesoEnvioArchivo = new Thread(EnviandoArchivo);
+            procesoEnvioArchivo.Start();
+        }
+        private void EnviandoArchivo()
+        {
+            byte[] TramaEnvioArchivo; //se ejecuta una sola vez
+            byte[] TramaCabeceraEnvioArchivo; //se ejecuta una sola vez
+            //byte[] TramaInfoArchivo;
+            //byte[] TramaCabeceraInfoArchivo;
+            TramaEnvioArchivo = new byte[1019];
+            TramaCabeceraEnvioArchivo = new byte[5];
+            //TramaCabeceraInfoArchivo = new byte[5];
+            //TramaInfoArchivo = new byte[1019];
+            //enviar la primera trama con el nbombre archivo
+            
+            //-MessageBox.Show("Enviando trama con información del archivo");
+            //ENVIAR TRAMA DE INFORMACIÓN
 
-            MessageBox.Show(ASCIIEncoding.UTF8.GetString(TramaCabeceraEnvioArchivo) + ASCIIEncoding.UTF8.GetString(TramaInfoArchivo));
+
             //ENVIAR LAS TRAMAS DE DATOS
 
             //-MessageBox.Show("trama cabecera: " + ASCIIEncoding.UTF8.GetString(TramaCabeceraEnvioArchivo));
@@ -412,7 +420,7 @@ namespace winproySerialPort
                 tramasRecibidas += 1;
                 FlujoArchivoRecibir.Close();
                 EscribiendoArchivo.Close();
-                MessageBox.Show("se envió sin saber dónde mrd fallaba :v");
+                MessageBox.Show("por fin te salió, puedes ir a dormir en paz :'v");
             }
             //EscribiendoArchivo.Write();
             
