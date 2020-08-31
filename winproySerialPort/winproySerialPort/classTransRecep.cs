@@ -88,7 +88,7 @@ namespace winproySerialPort
                 contArchivos = 0;
 
             }
-            catch (UnauthorizedAccessException ex)
+            catch (UnauthorizedAccessException)
             {
                 MessageBox.Show("El puerto "+nombrePuerto+" está siendo utilizado, por favor seleccione otro.");
                 //puerto = new SerialPort("COM2", 57600, Parity.Even, 8, StopBits.Two);

@@ -52,7 +52,7 @@ namespace winproySerialPort
             {
                 estado = objTxRx.EstadoConexion();
             }
-            catch(NullReferenceException ex)
+            catch(NullReferenceException)
             {
                 estado = false;
             }
@@ -109,7 +109,7 @@ namespace winproySerialPort
             {
                 objTxRx.CerrarConexion();
             }
-            catch(NullReferenceException ex)
+            catch(NullReferenceException)
             {
 
             }
@@ -136,7 +136,8 @@ namespace winproySerialPort
 
         private void btnEnviarArchivo_Click(object sender, EventArgs e)
         {
-            string path = "D:\\PRUEBA\\prueba_1.pdf";
+            openFileDialog1.ShowDialog();
+            string path = openFileDialog1.FileName;
             objTxRx.IniciaEnvioArchivo(path);
         }
     }
