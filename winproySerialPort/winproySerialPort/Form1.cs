@@ -133,5 +133,11 @@ namespace winproySerialPort
         {
             objTxRx.CerrarConexion();
         }
+
+        private void btnEnviarArchivo_Click(object sender, EventArgs e)
+        {
+            string path = "D:\\PRUEBA\\prueba_1.pdf";
+            objTxRx.IniciaEnvioArchivo(path);
+        }
     }
 }

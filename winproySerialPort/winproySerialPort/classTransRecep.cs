@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
+using System.IO;
 using System.Windows.Forms;
 using System.Threading;
 
@@ -16,11 +17,21 @@ namespace winproySerialPort
         public event HandlerTxRx LlegoMensaje;
         public event HandlerTxRx EnviadoMensaje;
 
+        //archivos
+        private classArchivo archivoEnviar;
+        private FileStream FlujoArchivoEnviar;
+        private BinaryReader LeyendoArchivo;
+
+        private classArchivo archivoRecibir;
+        private FileStream FlujoArchivoRecibir;
+        private BinaryWriter EscribiendoArchivo;
 
         Thread procesoEnvio;
         Thread procesoVerificaSalida;
         Thread procesoRecibirMensaje;
 
+        Thread procesoEnvioArchivo;
+        Thread procesoConstruyeArchivo;
 
         private SerialPort puerto; 
         public string nombrePuerto;
@@ -34,6 +45,8 @@ namespace winproySerialPort
         byte[] TramaCabeceraEnvio;
         byte[] TramaRelleno;
         byte[] TramaRecibida;
+
+        private int contArchivos;
 
         private bool estadoConexion;
 
@@ -67,7 +80,12 @@ namespace winproySerialPort
                 BufferSalidaVacio = true; //Inicialmente el buffer de salida está vacío
                 procesoVerificaSalida = new Thread(VerificandoSalida); //
                 procesoVerificaSalida.Start();
+
+                archivoEnviar = new classArchivo();
+                archivoRecibir = new classArchivo();
                 MessageBox.Show("Apertura del puerto " + puerto.PortName);
+
+                contArchivos = 0;
 
             }
             catch (UnauthorizedAccessException ex)
@@ -115,6 +133,8 @@ namespace winproySerialPort
                         procesoRecibirMensaje.Start();
                         break;
                     case "A":
+                        procesoConstruyeArchivo = new Thread(construirArchivo);
+                        procesoConstruyeArchivo.Start();
                         break;
                     default: MessageBox.Show("Trama no reconocida");
                         break;
@@ -234,6 +254,99 @@ namespace winproySerialPort
             bool estado;
             estado = puerto.IsOpen;
             return estado;
+        }
+
+        //archivos
+        public void IniciaEnvioArchivo(string path)
+        {
+            int tamNombre = path.Length - (path.LastIndexOf('\\')) - (path.Length - path.LastIndexOf('.'))-1;
+            //abrirlo, manejar el control de errorres (excepciones)
+            //leerlo en stream
+            //iniciar una hebra de envío
+            FlujoArchivoEnviar = new FileStream(path, FileMode.Open, FileAccess.Read);
+            LeyendoArchivo = new BinaryReader(FlujoArchivoEnviar);
+            archivoEnviar.Path = path;
+            archivoEnviar.Extension = path.Substring(path.LastIndexOf('.') + 1, path.Length - path.LastIndexOf('.') - 1);
+            archivoEnviar.Directorio = path.Substring(0, path.LastIndexOf('\\'));
+            archivoEnviar.Nombre = path.Substring(path.LastIndexOf('\\') + 1, tamNombre);
+            archivoEnviar.Tamaño = FlujoArchivoEnviar.Length;
+            archivoEnviar.Avance = 0;
+            archivoEnviar.Id = contArchivos;
+            contArchivos += 1;
+            MessageBox.Show("Se enviará: " + '\n' + archivoEnviar.Nombre+'\n' + archivoEnviar.Tamaño+ '\n' + archivoEnviar.Id);
+            procesoEnvioArchivo = new Thread(EnviandoArchivo);
+            procesoEnvioArchivo.Start();
+        }
+
+        private void EnviandoArchivo()
+        {
+            byte[] TramaEnvioArchivo; //se ejecuta una sola vez
+            byte[] TramaCabeceraEnvioArchivo; //se ejecuta una sola vez
+
+            TramaEnvioArchivo = new byte[1019];
+            TramaCabeceraEnvioArchivo = new byte[5];
+
+            //enviar la primera trama con el nbombre archivo
+            TramaCabeceraEnvioArchivo = ASCIIEncoding.UTF8.GetBytes("AC001");
+            //ENVIAR LAS TRAMAS DE INFORMACIÓN
+            TramaCabeceraEnvioArchivo = ASCIIEncoding.UTF8.GetBytes("AI001");
+
+            while (archivoEnviar.Avance <= archivoEnviar.Tamaño - 1019)
+            {
+                LeyendoArchivo.Read(TramaEnvioArchivo, 0, 1019);
+                archivoEnviar.Avance+=1019;
+                //envio de una trama llena de 1019 bytes del archivo
+                while (BufferSalidaVacio == false)
+                {
+                    //esperamos
+                }
+                puerto.Write(TramaCabeceraEnvioArchivo, 0, 5);
+                puerto.Write(TramaEnvioArchivo, 0, 1019);
+                //MessageBox.Show("avance : " + archivoEnviar.Avance.ToString());
+            }
+            int tamito = Convert.ToInt16(archivoEnviar.Tamaño - archivoEnviar.Avance);
+            LeyendoArchivo.Read(TramaEnvioArchivo,0,tamito);
+            //envio de la última trama + relleno
+            while (BufferSalidaVacio == false)
+            {
+                //esperamos
+            }
+            MessageBox.Show("avance : " + archivoEnviar.Avance.ToString()+"falta:"+tamito.ToString());
+            
+            puerto.Write(TramaCabeceraEnvioArchivo, 0, 5);
+            puerto.Write(TramaEnvioArchivo, 0, tamito);
+            puerto.Write(TramaRelleno, 0, 1019 - tamito);
+            MessageBox.Show("Se enviaron: " + (archivoEnviar.Avance+tamito)+ " bytes"+'\n'+ (archivoEnviar.Avance/1019)+"KB");
+            FlujoArchivoEnviar.Close();
+            LeyendoArchivo.Close();
+        }
+        private void IniciaConstruirArchivo(string nombre, long tam, int idNum)
+        {
+            FlujoArchivoRecibir = new FileStream(nombrePuerto, FileMode.Create, FileAccess.Write);
+            EscribiendoArchivo = new BinaryWriter(FlujoArchivoRecibir);
+            archivoRecibir.Nombre = nombre;
+            archivoRecibir.Id = 1;
+            archivoRecibir.Tamaño = 145954; //es el de prueba
+            archivoRecibir.Avance = 0;
+            //archivoRecibir.Ruta
+        }
+        private void construirArchivo()
+        {
+            //debe realizarse en función del tamaño 1019 y la última será tamito
+            if(archivoRecibir.Avance<archivoRecibir.Tamaño - 1019)
+            {
+                EscribiendoArchivo.Write(TramaRecibida,5,1019);
+                archivoRecibir.Avance += 1019;
+            }
+            else
+            {
+                int tamito = Convert.ToInt16(archivoRecibir.Tamaño - archivoRecibir.Avance);
+                EscribiendoArchivo.Write(TramaRecibida, 5, tamito);
+                FlujoArchivoRecibir.Close();
+                EscribiendoArchivo.Close();
+            }
+            //EscribiendoArchivo.Write();
+            
         }
     }
 }
