@@ -90,6 +90,7 @@ namespace winproySerialPort
             //objTxRx.Recibir();
             //Mostramos la cantidad de bytes que faltan por salir del buffer
             MessageBox.Show("Faltan por salir a enviar: " + objTxRx.BytesPorSalir().ToString());
+            MessageBox.Show("Tramas recibidas: " + objTxRx.tramasRecibidas);
         }
 
         private void puertoSerialToolStripMenuItem_Click(object sender, EventArgs e)
