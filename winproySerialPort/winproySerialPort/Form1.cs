@@ -137,6 +137,7 @@ namespace winproySerialPort
 
         private void btnEnviarArchivo_Click(object sender, EventArgs e)
         {
+            openFileDialog1.FileName = "";
             openFileDialog1.ShowDialog();
             string path = openFileDialog1.FileName;
             objTxRx.IniciaEnvioArchivo(path);

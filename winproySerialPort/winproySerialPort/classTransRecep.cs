@@ -18,11 +18,11 @@ namespace winproySerialPort
         public event HandlerTxRx EnviadoMensaje;
 
         //archivos
-        private classArchivo archivoEnviar;
+        private Archivo archivoEnviar;
         private FileStream FlujoArchivoEnviar;
         private BinaryReader LeyendoArchivo;
 
-        private classArchivo archivoRecibir;
+        private Archivo archivoRecibir;
         private FileStream FlujoArchivoRecibir;
         private BinaryWriter EscribiendoArchivo;
 
@@ -33,7 +33,7 @@ namespace winproySerialPort
         Thread procesoEnvioArchivo;
         Thread procesoConstruyeArchivo;
 
-        private SerialPort puerto; 
+        private SerialPort puerto;
         public string nombrePuerto;
         public int baudiosPuerto;
         private string mensajeEnviar;
@@ -59,9 +59,9 @@ namespace winproySerialPort
 
             TramaRecibida = new byte[1024];
 
-            for (int i=0; i<1024; i++)
+            for (int i = 0; i < 1024; i++)
             {
-                TramaRelleno[i]= 64;
+                TramaRelleno[i] = 64;
             }
         }
 
@@ -74,7 +74,7 @@ namespace winproySerialPort
             //Desencadena el método puerto_DataReceived
             puerto.DataReceived += new SerialDataReceivedEventHandler(puerto_DataReceived);
             try
-            {                
+            {
                 puerto.Open();
                 estadoConexion = true;
                 //Esta hebra es un bucle infinito xd
@@ -82,8 +82,8 @@ namespace winproySerialPort
                 procesoVerificaSalida = new Thread(VerificandoSalida); //
                 procesoVerificaSalida.Start();
 
-                archivoEnviar = new classArchivo();
-                archivoRecibir = new classArchivo();
+                //archivoEnviar = new Archivo("s");
+                //archivoRecibir = new Archivo("s");
                 MessageBox.Show("Apertura del puerto " + puerto.PortName);
 
                 contArchivos = 0;
@@ -91,22 +91,22 @@ namespace winproySerialPort
             }
             catch (UnauthorizedAccessException)
             {
-                MessageBox.Show("El puerto "+nombrePuerto+" está siendo utilizado, por favor seleccione otro.");
+                MessageBox.Show("El puerto " + nombrePuerto + " está siendo utilizado, por favor seleccione otro.");
                 //puerto = new SerialPort("COM2", 57600, Parity.Even, 8, StopBits.Two);
                 //puerto.ReceivedBytesThreshold = 1024;
                 //puerto.DataReceived += new SerialDataReceivedEventHandler(puerto_DataReceived);
                 //puerto.Open();
                 estadoConexion = false;
             }
-            catch(System.IO.IOException ex)
+            catch (System.IO.IOException ex)
             {
-                MessageBox.Show("No se puede establecer conexion. "+ex.Message);
+                MessageBox.Show("No se puede establecer conexion. " + ex.Message);
                 estadoConexion = false;
                 //MessageBox.Show("Estado conexion false");
             }
             finally
             {
-                
+
             }
             //MessageBox.Show("Estado conexion true");
         }
@@ -119,13 +119,13 @@ namespace winproySerialPort
 
         private void puerto_DataReceived(object o, SerialDataReceivedEventArgs sd)
         {
-            if(puerto.BytesToRead >=1024)
+            if (puerto.BytesToRead >= 1024)
             {
 
                 puerto.Read(TramaRecibida, 0, 1024);
 
                 string TAREA = ASCIIEncoding.UTF8.GetString(TramaRecibida, 0, 1);
-                
+
                 switch (TAREA)
                 {
                     case "M":
@@ -140,7 +140,7 @@ namespace winproySerialPort
                             IniciaConstruirArchivo(TramaInf);
                             MessageBox.Show("Llegó trama de información y se creó el archivo");
                         }
-                        else if(TipoTramaArchivo.Equals("D"))
+                        else if (TipoTramaArchivo.Equals("D"))
                         {
                             //procesoConstruyeArchivo = new Thread(construirArchivo);
                             //procesoConstruyeArchivo.Start();
@@ -148,7 +148,8 @@ namespace winproySerialPort
                             construirArchivo();
                         }
                         break;
-                    default: MessageBox.Show("Trama no reconocida"+TAREA);
+                    default:
+                        MessageBox.Show("Trama no reconocida" + TAREA);
                         break;
                 }
                 //string CabRec = ASCIIEncoding.UTF8.GetString(TramaRecibida, 0, 5);
@@ -189,7 +190,7 @@ namespace winproySerialPort
 
             TramaEnvio = ASCIIEncoding.UTF8.GetBytes(mensajeEnviar);
             //TramaCabeceraEnvio va a contener la longitud del mensaje
-            for(int i=1; i<=(4-longReal.Length); i++)
+            for (int i = 1; i <= (4 - longReal.Length); i++)
             {
                 longMensString += "0";
             }
@@ -202,7 +203,7 @@ namespace winproySerialPort
                 longMensString = "00" + longReal.ToString();
             if (longReal.Length == 4)
                 longMensString = "0" + longReal.ToString();*/
-            
+
             TramaCabeceraEnvio = ASCIIEncoding.UTF8.GetBytes(longMensString);
             procesoEnvio = new Thread(Enviando);
             procesoEnvio.Start();
@@ -223,12 +224,12 @@ namespace winproySerialPort
                 //puerto.Write(TramaRelleno, 0, 1019 - TramaEnvio.Length);
                 MessageBox.Show("mensaje terminado de enviar");
             }
-            catch(InvalidOperationException ex)
+            catch (InvalidOperationException ex)
             {
                 MessageBox.Show("No se estableció una conexión, por favor configure el puerto.");
             }
             // puerto.Write(mensajeEnviar);
-            
+
         }
 
         public void Recibir()
@@ -242,7 +243,7 @@ namespace winproySerialPort
             //Verifica si existen bytes en el buffer de salida 
             while (estadoConexion)
             {
-                if(puerto.BytesToWrite > 0)
+                if (puerto.BytesToWrite > 0)
                 {
                     //Bandera que índicad si el buffer de salida está vacío o no
                     BufferSalidaVacio = false;
@@ -257,7 +258,7 @@ namespace winproySerialPort
         public int BytesPorSalir() //Devuelve la cantidad de bytes que faltan salir del buffer
         {
             int cantBytes = 0;
-            if(BufferSalidaVacio == false)
+            if (BufferSalidaVacio == false)
             {
                 //Preguntamos cuántos bytes faltan salir cuando el buffer no está vacío
                 cantBytes = puerto.BytesToWrite;
@@ -275,19 +276,15 @@ namespace winproySerialPort
         //archivos
         public void IniciaEnvioArchivo(string path)
         {
-            int tamNombre = path.Length - (path.LastIndexOf('\\')) - (path.Length - path.LastIndexOf('.'))-1;
+            archivoEnviar.Path = path;
             //abrirlo, manejar el control de errorres (excepciones)
             //leerlo en stream
             //iniciar una hebra de envío
             FlujoArchivoEnviar = new FileStream(path, FileMode.Open, FileAccess.Read);
             LeyendoArchivo = new BinaryReader(FlujoArchivoEnviar);
-            archivoEnviar.Path = path;
-            archivoEnviar.Extension = path.Substring(path.LastIndexOf('.') + 1, path.Length - path.LastIndexOf('.') - 1);
-            archivoEnviar.Directorio = path.Substring(0, path.LastIndexOf('\\'));
-            archivoEnviar.Nombre = path.Substring(path.LastIndexOf('\\') + 1, tamNombre);
-            archivoEnviar.Tamano = FlujoArchivoEnviar.Length;
-            archivoEnviar.Tipo = "Archivo genérico";
-            archivoEnviar.Avance = 0;
+            // archivoEnviar.Tamano = FlujoArchivoEnviar.Length;
+            // archivoEnviar.Tipo = "Archivo genérico";
+            // archivoEnviar.Avance = 0;
             archivoEnviar.Id = contArchivos;
             contArchivos += 1;
             //-MessageBox.Show("Se enviará: " + '\n' + archivoEnviar.Nombre+'\n' + archivoEnviar.Tamaño+ '\n' + archivoEnviar.Id);
@@ -297,7 +294,7 @@ namespace winproySerialPort
         }
         private void EnviandoInfoArchivo()
         {
-            byte[] TramaInfoArchivo = new byte [1019];
+            byte[] TramaInfoArchivo = new byte[1019];
             byte[] TramaCabeceraInfoArchivo = new byte[5];
 
             TramaCabeceraInfoArchivo = ASCIIEncoding.UTF8.GetBytes("AI001");
@@ -328,7 +325,7 @@ namespace winproySerialPort
             //TramaCabeceraInfoArchivo = new byte[5];
             //TramaInfoArchivo = new byte[1019];
             //enviar la primera trama con el nbombre archivo
-            
+
             //-MessageBox.Show("Enviando trama con información del archivo");
             //ENVIAR TRAMA DE INFORMACIÓN
 
@@ -338,28 +335,28 @@ namespace winproySerialPort
             //-MessageBox.Show("trama cabecera: " + ASCIIEncoding.UTF8.GetString(TramaCabeceraEnvioArchivo));
             //while (archivoEnviar.Avance <= archivoEnviar.Tamano - 1019)
             TramaCabeceraEnvioArchivo = ASCIIEncoding.UTF8.GetBytes("AD001");
-            while ((archivoEnviar.Tamano-archivoEnviar.Avance)>1019)
+            /* while ((archivoEnviar.Tamano - archivoEnviar.Avance) > 1019)
             {
                 LeyendoArchivo.Read(TramaEnvioArchivo, 0, 1019);
-                archivoEnviar.Avance+=1019;
+                archivoEnviar.Avance += 1019;
                 //envio de una trama llena de 1019 bytes del archivo
                 BufferSalidaVacio = false;
-                while (BufferSalidaVacio==false)
+                while (BufferSalidaVacio == false)
                 {
                     //esperamos
                 }
                 BufferSalidaVacio = false;
                 //espera aleatoria
-                puerto.Write(TramaCabeceraEnvioArchivo,0,5);
+                puerto.Write(TramaCabeceraEnvioArchivo, 0, 5);
                 BufferSalidaVacio = false;
                 puerto.Write(TramaEnvioArchivo, 0, 1019);
                 BufferSalidaVacio = false;
                 tramasEnviadas += 1;
                 //-MessageBox.Show("trama enviada: " + tramas);
                 //MessageBox.Show("avance : " + archivoEnviar.Avance.ToString());
-            }
-            int restante = Convert.ToInt32(archivoEnviar.Tamano - archivoEnviar.Avance);
-            LeyendoArchivo.Read(TramaEnvioArchivo,0,restante);
+            } */
+            // int restante = Convert.ToInt32(archivoEnviar.Tamano - archivoEnviar.Avance);
+            // LeyendoArchivo.Read(TramaEnvioArchivo, 0, restante);
             //envio de la última trama + relleno
             while (BufferSalidaVacio == false)
             {
@@ -367,8 +364,8 @@ namespace winproySerialPort
             }
             //-MessageBox.Show("avance : " + archivoEnviar.Avance.ToString()+"falta:"+ restante.ToString());
             puerto.Write(TramaCabeceraEnvioArchivo, 0, 5);
-            puerto.Write(TramaEnvioArchivo, 0, restante);
-            puerto.Write(TramaRelleno, 0, 1019 - restante);
+            // puerto.Write(TramaEnvioArchivo, 0, restante);
+            // puerto.Write(TramaRelleno, 0, 1019 - restante);
             tramasEnviadas += 1;
             //-MessageBox.Show("Se enviaron: " + (archivoEnviar.Avance+ restante) + " bytes"+'\n'+ (archivoEnviar.Avance/1019)+"KB");
             //-MessageBox.Show("tramas enviadas: " + tramas);
@@ -378,11 +375,11 @@ namespace winproySerialPort
             //}
             LeyendoArchivo.Close();
             FlujoArchivoEnviar.Close();
-            MessageBox.Show("tramas enviadas" + tramasEnviadas+ ASCIIEncoding.UTF8.GetString(TramaCabeceraEnvioArchivo));
+            MessageBox.Show("tramas enviadas" + tramasEnviadas + ASCIIEncoding.UTF8.GetString(TramaCabeceraEnvioArchivo));
         }
         public void IniciaConstruirArchivo(string trama)
         {
-            //-MessageBox.Show(trama);
+            MessageBox.Show(trama);
             //string nom = trama.Substring(4, trama.IndexOf('?')-1);
             //string tipo = trama.Substring(nom.Length, trama.IndexOf('?', nom.Length));
             //string ext = trama.Substring(tipo.Length, trama.IndexOf('?', tipo.Length));
@@ -397,17 +394,17 @@ namespace winproySerialPort
             EscribiendoArchivo = new BinaryWriter(FlujoArchivoRecibir);
             archivoRecibir.Nombre = nom;
             archivoRecibir.Id = 0;
-            archivoRecibir.Tamano = 261753; //es el de prueba
-            archivoRecibir.Avance = 0;
+            // archivoRecibir.Tamano = tam; //es el de prueba
+            // archivoRecibir.Avance = 0;
             //archivoRecibir.Ruta
         }
         private void construirArchivo()
         {
             //debe realizarse en función del tamaño 1019 y la última será tamito
             //-MessageBox.Show("se recibieron: "+archivoRecibir.Tamaño);
-            if(archivoRecibir.Avance<=archivoRecibir.Tamano - 1019)
+            /* if (archivoRecibir.Avance <= archivoRecibir.Tamano - 1019)
             {
-                EscribiendoArchivo.Write(TramaRecibida,5,1019);
+                EscribiendoArchivo.Write(TramaRecibida, 5, 1019);
                 //-MessageBox.Show("se avanzó: " + archivoRecibir.Avance);
                 archivoRecibir.Avance += 1019;
                 tramasRecibidas += 1;
@@ -421,9 +418,9 @@ namespace winproySerialPort
                 FlujoArchivoRecibir.Close();
                 EscribiendoArchivo.Close();
                 MessageBox.Show("por fin te salió, puedes ir a dormir en paz :'v");
-            }
+            }*/
             //EscribiendoArchivo.Write();
-            
+
         }
     }
 }
