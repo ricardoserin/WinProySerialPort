@@ -14,11 +14,12 @@ namespace winproySerialPort
     class EventController
     {
         // Delegado y eventos mensaje enviado y recibido
-        
 
-        private Thread procesoEnvio;
         public Emmiter emisor { get; private set; }
         public Receiver receptor { get; private set; }
+
+        private Thread procesoEnvio;
+        private Thread procesoRecepcion;
 
         public void Inicializar(string nombrePuerto, int tamanoDeTrama = 1024)
         {
@@ -46,12 +47,32 @@ namespace winproySerialPort
             procesoEnvio.Start();
         }
 
+        public void Enviar(ArchivoLectura archivoLectura)
+        {
+            emisor.Inicializar(archivoLectura);
+            procesoEnvio = new Thread(emisor.Transmitir);
+            procesoEnvio.Start();
+        }
+
+        public void Recibir()
+        {
+            receptor.Inicializar();
+            procesoRecepcion = new Thread(receptor.Recibir);
+            procesoRecepcion.Start();
+        }
+        public void Recibir(ArchivoEscritura archivo)
+        {
+            receptor.Inicializar(archivo);
+            procesoRecepcion = new Thread(receptor.Recibir);
+            procesoRecepcion.Start();
+        }
+
         // Función que se dispara cuando el receptor recibe datos
         private void receptor_DataReceived(object o, System.IO.Ports.SerialDataReceivedEventArgs args)
         {
             if (Puerto.puerto.BytesToRead >= receptor.TamanoDeTrama)
             {
-                receptor.Recibir();
+                Recibir();
             }
         }
 

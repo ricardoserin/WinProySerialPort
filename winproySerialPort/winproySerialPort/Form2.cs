@@ -28,12 +28,15 @@ namespace winproySerialPort
             return path;
         }
 
-        private string ObtenerRutaGuardado(Archivo archivoLectura)
+        private string ObtenerRutaGuardado(Archivo archivoLectura = null)
         {
-            saveFileDialog1.InitialDirectory = archivoLectura.Directorio;
-            saveFileDialog1.FileName = $"{archivoLectura.Nombre}-copia";
-            saveFileDialog1.DefaultExt = archivoLectura.Extension;
-            saveFileDialog1.AddExtension = true;
+            if (archivoLectura != null)
+            {
+                saveFileDialog1.InitialDirectory = archivoLectura.Directorio;
+                saveFileDialog1.FileName = $"{archivoLectura.Nombre}-copia";
+                saveFileDialog1.DefaultExt = archivoLectura.Extension;
+                saveFileDialog1.AddExtension = true;
+            }
             saveFileDialog1.ShowDialog();
             string path = saveFileDialog1.FileName;
             return path;
@@ -41,9 +44,10 @@ namespace winproySerialPort
 
         private void button1_Click(object sender, EventArgs e)
         {
-            /*
             var archivoLectura = new ArchivoLectura(LeerRutaArchivo());
-            var archivoEscritura = new ArchivoEscritura(ObtenerRutaGuardado(archivoLectura));
+            eventController.Enviar(archivoLectura);
+            // var archivoEscritura = new ArchivoEscritura(ObtenerRutaGuardado(archivoLectura));
+            /*
             var arreglo = new byte[archivoLectura.TamanoTrama];
             long restante = archivoLectura.Tamano;
 
@@ -61,8 +65,8 @@ namespace winproySerialPort
             archivoLectura.DesactivarArchivo();
             archivoLectura.Leer(arreglo);
             archivoEscritura.Escribir(arreglo);
-            */
             MessageBox.Show(Puerto.BytesPorSalir.ToString());
+            */
         }
 
         private void btnEnviar_Click(object sender, EventArgs e)
@@ -82,6 +86,7 @@ namespace winproySerialPort
                 eventController.Inicializar(puerto, tamanoDeTrama);
                 // Se agregan las funciones a los eventos
                 eventController.receptor.MessageReceived += EventController_LlegoMensaje;
+                eventController.receptor.DataFromFileReceived += EventController_InicioRecepcionArchivo;
                 eventController.emisor.MessageEmmited += EventController_EnvioMensaje;
                 // Establece el nombre del formulario
                 Text = Puerto.NombrePuerto;
@@ -99,6 +104,13 @@ namespace winproySerialPort
         private void EventController_LlegoMensaje(object o, string mensajeRecibido)
         {
             Invoke(ObtenerMensajeDeProceso, mensajeRecibido, "El otro puerto");    
+        }
+
+        private void EventController_InicioRecepcionArchivo(object o)
+        {
+            var archivoEscritura = new ArchivoEscritura(ObtenerRutaGuardado());
+            eventController.receptor.Inicializar(archivoEscritura);
+            //Invoke(ObtenerMensajeDeProceso, mensajeRecibido, "El otro puerto");
         }
 
         private void EventController_EnvioMensaje(object o, string mensajeEnviado)

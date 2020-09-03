@@ -20,9 +20,8 @@ namespace winproySerialPort
         private string CabeceraTramas;
         private int NumeroDeTramas;
         private ArchivoLectura archivoEnviar;
-        private ArchivoEscritura archivoRecibir;
-        private byte[] ARREGLO = new byte[1024];
         private Trama[] Tramas;
+        private bool isArchivo = false;
         public delegate void EmmitHandler(object obj, string mensaje);
         private event EmmitHandler messageEmmited;
         public event EmmitHandler MessageEmmited
@@ -52,9 +51,14 @@ namespace winproySerialPort
             GenerarTramas();
         }
 
-        public void Enviar()
+        public void Inicializar(ArchivoLectura archivo)
         {
-            Puerto.Escribir(MensajeEnviar);
+            isArchivo = true;
+            archivoEnviar = archivo;
+            EnvioTerminado = false;
+            IndiceTrama = 0;
+            CabeceraTramas = generarCabeceraArchivo();
+            GenerarTramasArchivo();
         }
 
         public void Transmitir()
@@ -70,12 +74,13 @@ namespace winproySerialPort
         }
         protected virtual void OnEnvioTerminado()
         {
-            messageEmmited?.Invoke(this, Encoding.UTF8.GetString(MensajeEmisor.Contenido));
-        }
-        public void Recibir(string path)
-        {
-            archivoRecibir = new ArchivoEscritura(path);
-            archivoRecibir.Escribir(ARREGLO);
+            if (isArchivo)
+            {
+                messageEmmited?.Invoke(this, archivoEnviar.Path);
+            } else
+            {
+                messageEmmited?.Invoke(this, Encoding.UTF8.GetString(MensajeEmisor.Contenido));
+            }
         }
         private int CalcularNumeroDeTramas()
         {
@@ -87,6 +92,30 @@ namespace winproySerialPort
             string formato = "D" + (TamanoDeCabeceras - 1);
             string cabecera = "M" + MensajeEmisor.Contenido.Length.ToString(formato);
             return cabecera;
+        }
+        private string generarCabeceraArchivo()
+        {
+            string formato = "D" + (TamanoDeCabeceras - 1);
+            string cabecera = "A" + archivoEnviar.Tamano.ToString(formato);
+            return cabecera;
+        }
+        private void GenerarTramasArchivo()
+        {
+            var restante = archivoEnviar.Tamano;
+            double numeroDeTramas = Convert.ToDouble(archivoEnviar.Tamano) / (TamanoDeTramas - TamanoDeCabeceras);
+            NumeroDeTramas = (int)Math.Ceiling(numeroDeTramas);
+            Tramas = new Trama[NumeroDeTramas];
+            for (int i = 0; i < NumeroDeTramas; i++)
+            {
+                Tramas[i] = new Trama(TamanoDeTramas, TamanoDeCabeceras);
+                var maximo = (restante < Tramas[i].TamanoDeCuerpo) ? (int) restante : Tramas[i].TamanoDeCuerpo;
+                var temp = archivoEnviar.Leer(maximo);
+                Tramas[i].GenerarCabecera(CabeceraTramas);
+                Tramas[i].GenerarCuerpo(temp);
+                Tramas[i].GenerarTramaEnvio();
+                restante -= Tramas[i].TamanoDeCuerpo;
+            }
+            archivoEnviar.DesactivarArchivo();
         }
         private void GenerarTramas()
         {

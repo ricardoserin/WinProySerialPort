@@ -9,7 +9,7 @@ namespace winproySerialPort
 {
     static class Puerto
     {
-        private readonly static int baudios = 10192;
+        private readonly static int baudios = 57600;
         public static SerialPort puerto { get; private set; }
         public static string NombrePuerto { get; set; }
         public static bool BufferDeSalidaVacio { 
