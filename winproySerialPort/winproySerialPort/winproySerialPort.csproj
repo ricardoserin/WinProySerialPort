@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -46,8 +47,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Modelos\ArchivoEscritura.cs" />
-    <Compile Include="Modelos\ArchivoLectura.cs" />
+    <Compile Include="Controladores\ArchivoRecepcion.cs" />
+    <Compile Include="Controladores\ArchivoEnvio.cs" />
+    <Compile Include="FrmSerialPortConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmSerialPortConfig.Designer.cs">
+      <DependentUpon>FrmSerialPortConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="Modelos\Archivo.cs" />
     <Compile Include="classTransRecep.cs" />
     <Compile Include="Controladores\Emmiter.cs" />
@@ -65,18 +72,14 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmSerialPortConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FrmSerialPortConfig.Designer.cs">
-      <DependentUpon>FrmSerialPortConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="Modelos\Mensaje.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modelos\Puerto.cs" />
     <Compile Include="Controladores\Receiver.cs" />
     <Compile Include="Modelos\Trama.cs" />
+    <Compile Include="Controladores\TramasEnvio.cs" />
+    <Compile Include="Controladores\TramasRecepcion.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -96,6 +99,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -105,9 +109,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\send-icon-solid-01.png" />

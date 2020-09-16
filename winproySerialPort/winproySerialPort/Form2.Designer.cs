@@ -34,6 +34,8 @@
             this.rchMensaje = new System.Windows.Forms.RichTextBox();
             this.rchConversacion = new System.Windows.Forms.RichTextBox();
             this.btnEnviar = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.pbEnvio = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // button1
@@ -76,11 +78,29 @@
             this.btnEnviar.UseVisualStyleBackColor = true;
             this.btnEnviar.Click += new System.EventHandler(this.btnEnviar_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(593, 15);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(130, 21);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Progreso envio";
+            // 
+            // pbEnvio
+            // 
+            this.pbEnvio.Location = new System.Drawing.Point(596, 39);
+            this.pbEnvio.Name = "pbEnvio";
+            this.pbEnvio.Size = new System.Drawing.Size(180, 32);
+            this.pbEnvio.TabIndex = 5;
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.pbEnvio);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.btnEnviar);
             this.Controls.Add(this.rchConversacion);
             this.Controls.Add(this.rchMensaje);
@@ -89,6 +109,7 @@
             this.Text = "Form2";
             this.Load += new System.EventHandler(this.Form2_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -100,5 +121,7 @@
         private System.Windows.Forms.RichTextBox rchMensaje;
         private System.Windows.Forms.RichTextBox rchConversacion;
         private System.Windows.Forms.Button btnEnviar;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ProgressBar pbEnvio;
     }
 }

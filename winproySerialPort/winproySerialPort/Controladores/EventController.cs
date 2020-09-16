@@ -11,72 +11,58 @@ using System.Reflection;
 
 namespace winproySerialPort
 {
-    class EventController
+    static class EventController
     {
         // Delegado y eventos mensaje enviado y recibido
+        public static Emmiter Emisor { get; private set; }
+        public static Receiver Receptor { get; private set; }
 
-        public Emmiter emisor { get; private set; }
-        public Receiver receptor { get; private set; }
+        private static Thread procesoEnvio;
+        private static Thread procesoRecepcion;
 
-        private Thread procesoEnvio;
-        private Thread procesoRecepcion;
-
-        public void Inicializar(string nombrePuerto, int tamanoDeTrama = 1024)
+        public static void Inicializar(string nombrePuerto, int baudios = 57600, int tamanoDeTrama = 1024)
         {
-            InicializarEmisor(nombrePuerto);
-            InicializarReceptor(nombrePuerto);
+            Emisor = new Emmiter(nombrePuerto);
+            Receptor = new Receiver(nombrePuerto);
             Puerto.TamanoDeTrama = tamanoDeTrama;
             Puerto.DataRecibida += receptor_DataReceived;
         }
 
-        public void InicializarEmisor(string nombrePuerto)
-        {
-            emisor = new Emmiter(nombrePuerto);
-        }
-
-        public void InicializarReceptor(string nombrePuerto)
-        {
-            receptor = new Receiver(nombrePuerto);
-        }
-
         // Inicia un nuevo proceso que se encarga de enviar un mensaje
-        public void Enviar(string mensaje)
+        public static void Enviar(string mensaje)
         {
-            emisor.Inicializar(mensaje);
-            procesoEnvio = new Thread(emisor.Transmitir);
+            Emisor.Inicializar(mensaje);
+            // procesoEnvio = new Thread(Emisor.Transmitir);
+            // procesoEnvio.Start();
+        }
+
+        public static void Enviar(ArchivoEnvio archivoEnvio)
+        {
+            var tramas = archivoEnvio.Disassemble();
+            procesoEnvio = new Thread(() => Emisor.Transmitir(tramas));
             procesoEnvio.Start();
         }
 
-        public void Enviar(ArchivoLectura archivoLectura)
+        public static void Recibir()
         {
-            emisor.Inicializar(archivoLectura);
-            procesoEnvio = new Thread(emisor.Transmitir);
-            procesoEnvio.Start();
-        }
-
-        public void Recibir()
-        {
-            receptor.Inicializar();
-            procesoRecepcion = new Thread(receptor.Recibir);
+            Receptor.Inicializar();
+            procesoRecepcion = new Thread(Receptor.Recibir);
             procesoRecepcion.Start();
         }
-        public void Recibir(ArchivoEscritura archivo)
+        public static void Recibir(ArchivoRecepcion archivoRecepcion)
         {
-            receptor.Inicializar(archivo);
-            procesoRecepcion = new Thread(receptor.Recibir);
+            Receptor.Inicializar();
+            procesoRecepcion = new Thread(Receptor.Recibir);
             procesoRecepcion.Start();
         }
 
         // Función que se dispara cuando el receptor recibe datos
-        private void receptor_DataReceived(object o, System.IO.Ports.SerialDataReceivedEventArgs args)
+        private static void receptor_DataReceived(object o, System.IO.Ports.SerialDataReceivedEventArgs args)
         {
-            if (Puerto.puerto.BytesToRead >= receptor.TamanoDeTrama)
+            if (Puerto.puerto.BytesToRead >= Receptor.TamanoDeTrama)
             {
                 Recibir();
             }
         }
-
-
-
     }
 }

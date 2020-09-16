@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
+using System.Configuration;
 
 namespace winproySerialPort
 {
     static class Puerto
     {
-        private readonly static int baudios = 57600;
         public static SerialPort puerto { get; private set; }
         public static string NombrePuerto { get; set; }
         public static bool BufferDeSalidaVacio { 
@@ -47,8 +47,7 @@ namespace winproySerialPort
                 puerto.DataReceived -= value;
             }
         }
-
-        public static bool Inicializar(string nombrePuerto, int tamanoDeTrama = 15)
+        public static bool Inicializar(string nombrePuerto, int baudios = 57600, int tamanoDeTrama = 0)
         {
             if (puerto != null)
             {
@@ -59,7 +58,7 @@ namespace winproySerialPort
                 {
                     NombrePuerto = nombrePuerto;
                     puerto = new SerialPort(NombrePuerto, baudios, Parity.Even, 8, StopBits.Two);
-                    TamanoDeTrama = tamanoDeTrama;
+                    TamanoDeTrama = (tamanoDeTrama > 0) ? tamanoDeTrama : int.Parse(ConfigurationManager.AppSettings["tamanoDeTrama"]);
                     puerto.Open();
                     return true;
                 } catch

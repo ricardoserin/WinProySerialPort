@@ -16,6 +16,20 @@ namespace winproySerialPort
         public delegate void enviarDatosConexion(string puerto, int baudios);
         public event enviarDatosConexion enviado;
 
+        public delegate void ConfiguracionTerminada();
+        private event ConfiguracionTerminada configurado;
+        public event ConfiguracionTerminada Configurado
+        {
+            add
+            {
+                configurado += new ConfiguracionTerminada(value);
+            }
+            remove
+            {
+                configurado -= value;
+            }
+        }
+
         public delegate void cerrarConexion();
         public event cerrarConexion cerrado;
 
@@ -58,10 +72,18 @@ namespace winproySerialPort
         private void btnConectar_Click(object sender, EventArgs e)
         {
             string puerto = cbxPuertos.SelectedValue.ToString();
-            int baudios = Convert.ToInt32(txtBaudios.Text.ToString());
-            enviado(puerto, baudios);
-
-            this.Dispose();
+            int baudios = int.Parse(txtBaudios.Text.ToString());
+            //enviado(puerto, baudios);
+            //Dispose(); */
+            try
+            {
+                EventController.Inicializar(puerto, baudios, 1024);
+                Dispose();
+                configurado();
+            } catch
+            {
+                MessageBox.Show("Error al iniciar el puerto, seleccione uno diferente");
+            }
         }
 
         private void btnDesconectar_Click(object sender, EventArgs e)

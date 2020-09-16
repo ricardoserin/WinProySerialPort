@@ -13,7 +13,7 @@ namespace winproySerialPort
     {
         public string MensajeRecibido { get; set; }
         public Trama TramaRecibida { get; set; }
-        public ArchivoEscritura archivoRecibido { get; set; }
+        public ArchivoRecepcion archivoRecibido { get; set; }
         public int TamanoDeTrama { get; set; }
         public int TamanoDeCabecera { get; set; }
         public byte ByteRelleno { get; set; }
@@ -38,7 +38,7 @@ namespace winproySerialPort
             }
         }
 
-        public delegate void ReceiveFileHandler(object obj, ArchivoEscritura archivoRecibido);
+        public delegate void ReceiveFileHandler(object obj, ArchivoRecepcion archivoRecibido);
         private event ReceiveFileHandler fileReceived;
         public event ReceiveFileHandler FileReceived
         {
@@ -83,7 +83,7 @@ namespace winproySerialPort
         {
             MensajeRecibido = mensaje;
         }
-        public void Inicializar(ArchivoEscritura archivo)
+        public void Inicializar(ArchivoRecepcion archivo)
         {
             archivoRecibido = archivo;
         }
@@ -126,7 +126,7 @@ namespace winproySerialPort
                 TamanoLeido += cuerpoValido.Length;
                 LeerTrama();
             }
-            archivoRecibido.DesactivarArchivo();
+            // archivoRecibido.DesactivarArchivo();
             OnArchivoRecibido();
         }
 
@@ -156,7 +156,8 @@ namespace winproySerialPort
         }
         public void DecodificarCabecera()
         {
-            string cabecera = Encoding.UTF8.GetString(TramaRecibida.Cabecera);
+            // string cabecera = Encoding.UTF8.GetString(TramaRecibida.Cabecera);
+            var cabecera = "SAMPLEHEADER";
             string tarea = cabecera.Substring(0, 1);
             CabeceraDecodificada = new Cabecera
             {

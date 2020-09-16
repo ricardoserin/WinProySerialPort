@@ -15,15 +15,13 @@ namespace winproySerialPort
         public string Nombre { get; set; }
         public string Directorio { get; set; }
         public string Extension { get; set; }
-        public FileType Tipo { get; set; }
         public bool Activo { get; private set; }
-        public FileStream FlujoArchivo { get; set; }
+        
 
-        public Archivo(string path, FileType fileType)
+        public Archivo(string path)
         {
             // Se asigna el path y el tipo de archivo a sus atributos correspondientes
             Path = path;
-            Tipo = fileType;
 
             // Se asignan los demás atributos del archivo en función del path ingresado
             InicializarMetadatos();

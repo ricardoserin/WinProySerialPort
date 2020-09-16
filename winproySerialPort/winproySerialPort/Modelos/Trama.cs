@@ -9,8 +9,6 @@ namespace winproySerialPort
     class Trama
     {
         public byte[] Contenido { get; set; }
-        public byte[] Cabecera { get; set; }
-        public byte[] Cuerpo { get; set; }
         public byte Relleno { get; private set; }
         public string TipoDeTrama { get; set; }
         public int TamanoDeTrama { get; set; }
@@ -27,6 +25,16 @@ namespace winproySerialPort
             GenerarCuerpo(cuerpo);
             GenerarTramaEnvio();
         }
+
+        public Trama(byte[] contenido, int tamanoDeTrama = 1024, int tamanoDeCabecera = 5, byte byteDeRelleno = 64)
+        {
+            TamanoDeTrama = tamanoDeTrama;
+            TamanoDeCabecera = tamanoDeCabecera;
+            Relleno = byteDeRelleno;
+            Contenido = contenido;
+            TamanoDeCuerpo = TamanoDeTrama - TamanoDeCabecera;
+        }
+
         public Trama(int tamanoDeTrama = 1024, int tamanoDeCabecera = 5, byte byteDeRelleno = 64)
         {
             TamanoDeTrama = tamanoDeTrama;
@@ -37,28 +45,30 @@ namespace winproySerialPort
         }
         public void GenerarCabecera(string cabecera)
         {
-            Cabecera = Encoding.UTF8.GetBytes(cabecera);
+            // Cabecera = Encoding.UTF8.GetBytes(cabecera);
         }
         public void GenerarCuerpo(byte[] cuerpo)
         {
-            Cuerpo = new byte[TamanoDeCuerpo];
+            /* Cuerpo = new byte[TamanoDeCuerpo];
             for (int i = 0; i < TamanoDeCuerpo; i++)
             {
                 if (i < cuerpo.Length) Cuerpo[i] = cuerpo[i];
                 else Cuerpo[i] = Relleno;
-            }
+            } */
         }
         public void GenerarTramaEnvio()
         {
+            /*
             Contenido = new byte[TamanoDeTrama];
             for (int i = 0; i < TamanoDeTrama; i++)
             {
                 Contenido[i] = (i >= TamanoDeCabecera) ? Cuerpo[i - TamanoDeCabecera] : Cabecera[i];
-            }
+            }*/
         }
         public byte[] ObtenerCabeceraDesdeContenido()
         {
-            Cabecera = new byte[TamanoDeCabecera];
+            
+            var Cabecera = new byte[TamanoDeCabecera];
             for (int i = 0; i < TamanoDeCabecera; i++)
             {
                 Cabecera[i] = Contenido[i];
@@ -67,8 +77,9 @@ namespace winproySerialPort
         }
         public byte[] ObtenerCuerpoDesdeContenido()
         {
-            TamanoDeCuerpo = TamanoDeTrama - TamanoDeCabecera;
-            Cuerpo = new byte[TamanoDeCuerpo];
+            
+            TamanoDeCuerpo = TamanoDeTrama - TamanoDeCabecera; 
+            var Cuerpo = new byte[TamanoDeCuerpo];
             for (int i = 0; i < TamanoDeCuerpo; i++)
             {
                 Cuerpo[i] = Contenido[TamanoDeCabecera + i];
@@ -81,12 +92,12 @@ namespace winproySerialPort
             var tamanoCuerpoValido = TamanoDeCuerpo;
             for (int i = 0; i < TamanoDeCuerpo; i++)
             {
-                if (Cuerpo[i] == Relleno)
+               /* if (Cuerpo[i] == Relleno)
                 {
                     tamanoCuerpoValido = i;
                     break;
                 }
-                temp[i] = Cuerpo[i];
+                temp[i] = Cuerpo[i]; */
             }
             var cuerpoValido = new byte[tamanoCuerpoValido];
             Array.Copy(temp, cuerpoValido, tamanoCuerpoValido);

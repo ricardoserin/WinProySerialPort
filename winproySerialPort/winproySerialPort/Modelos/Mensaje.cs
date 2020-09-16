@@ -16,10 +16,5 @@ namespace winproySerialPort
             Contenido = Encoding.UTF8.GetBytes(contenido);
             TamanoMensaje = Contenido.Length;
         }
-        public Mensaje(byte[] contenido)
-        {
-            Contenido = contenido;
-            TamanoMensaje = Contenido.Length;
-        }
     }
 }
