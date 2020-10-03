@@ -15,7 +15,7 @@ namespace winproySerialPort
         private readonly int TamanoDatos;
         public int IndiceTrama { get; set; }
         public bool Enviado { get; set; }
-
+        public string DisplayMessage { get; set; }
         public TramasEnvio(int numeroTramas)
         {
             NumeroDeTramas = numeroTramas;
@@ -28,6 +28,8 @@ namespace winproySerialPort
             TamanoTrama = tamanoTrama;
             TamanoCabecera = tamanoCabecera;
             TamanoDatos = TamanoTrama - TamanoCabecera;
+            DisplayMessage = archivoEnvio.ArchivoLeido.Nombre;
+
             var indice = 0;
 
             var tamano = archivoEnvio.Tamano;
@@ -37,6 +39,28 @@ namespace winproySerialPort
             while (indice < NumeroDeTramas)
             {
                 var bytesLeidos = archivoEnvio.Lector.ReadBytes(TamanoDatos);
+                Tramas[indice] = GenerarTrama(bytesLeidos);
+                indice++;
+            }
+        }
+
+        public TramasEnvio(Mensaje mensaje, int tamanoTrama = 1024, int tamanoCabecera = 5)
+        {
+            TamanoTrama = tamanoTrama;
+            TamanoCabecera = tamanoCabecera;
+            TamanoDatos = TamanoTrama - TamanoCabecera;
+            DisplayMessage = mensaje.Texto;
+
+            var indice = 0;
+
+            var contenido = mensaje.Contenido;
+            var tamano = contenido.Length;
+            NumeroDeTramas = (int)Math.Ceiling((double)tamano / tamanoTrama);
+            Tramas = new Trama[NumeroDeTramas];
+
+            while (indice < NumeroDeTramas)
+            {
+                var bytesLeidos = contenido;
                 Tramas[indice] = GenerarTrama(bytesLeidos);
                 indice++;
             }

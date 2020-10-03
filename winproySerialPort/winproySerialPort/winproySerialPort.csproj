@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Controladores\ArchivoRecepcion.cs" />
     <Compile Include="Controladores\ArchivoEnvio.cs" />
+    <Compile Include="Controladores\EmmitController.cs" />
     <Compile Include="FrmSerialPortConfig.cs">
       <SubType>Form</SubType>
     </Compile>

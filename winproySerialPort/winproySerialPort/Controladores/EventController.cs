@@ -31,7 +31,7 @@ namespace winproySerialPort
         // Inicia un nuevo proceso que se encarga de enviar un mensaje
         public static void Enviar(string mensaje)
         {
-            Emisor.Inicializar(mensaje);
+            // Emisor.Inicializar(mensaje);
             // procesoEnvio = new Thread(Emisor.Transmitir);
             // procesoEnvio.Start();
         }

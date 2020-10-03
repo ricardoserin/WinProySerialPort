@@ -16,7 +16,6 @@ namespace winproySerialPort
         private event EmmitHandler transmissionStarted;
         public double ProgresoEnvio { get; set; }
         public bool Enviando { get; set; }
-        public Mensaje MensajeEmisor { get; set; }
 
         public event EmmitHandler MessageEmmited
         {
@@ -47,10 +46,6 @@ namespace winproySerialPort
             Puerto.Inicializar(nombrePuerto, baudios, tamanoDeTramas);
             Enviando = false;
         }
-        public void Inicializar(string mensaje)
-        {
-            MensajeEmisor = new Mensaje(mensaje);
-        }
 
         public void Transmitir(TramasEnvio tramas)
         {
@@ -60,17 +55,18 @@ namespace winproySerialPort
                 ProgresoEnvio = tramas.Progreso();
                 Puerto.Escribir(tramas.SiguienteTrama());
             }
-            OnEnvioTerminado();
+            OnEnvioTerminado(tramas.DisplayMessage);
         }
-        protected virtual void OnEnvioTerminado()
+        protected virtual void OnEnvioTerminado(string mensaje)
         {
             Enviando = false;
-            messageEmmited?.Invoke(this, "Archivo enviado");
+            messageEmmited?.Invoke(this, mensaje);
         }
         protected virtual void OnEnvioIniciado()
         {
             Enviando = true;
-            transmissionStarted?.Invoke(this, "Inicio envio");
+            ProgresoEnvio = 0;
+            transmissionStarted?.Invoke(this, "Inicio envío");
         }
     }
 }

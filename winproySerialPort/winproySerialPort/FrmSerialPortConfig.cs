@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
+using winproySerialPort.Controladores;
 
 namespace winproySerialPort
 {
@@ -77,7 +78,7 @@ namespace winproySerialPort
             //Dispose(); */
             try
             {
-                EventController.Inicializar(puerto, baudios, 1024);
+                EmmitController.Inicializar(puerto);
                 Dispose();
                 configurado();
             } catch

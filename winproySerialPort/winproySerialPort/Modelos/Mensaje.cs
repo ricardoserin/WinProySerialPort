@@ -10,11 +10,18 @@ namespace winproySerialPort
     {
         public byte[] Contenido { get; set; }
         public int TamanoMensaje { get; set; }
-
-        public Mensaje(string contenido)
+        public string Texto { get; set; }
+        
+        public Mensaje(string texto)
         {
-            Contenido = Encoding.UTF8.GetBytes(contenido);
+            Texto = texto;
+            Contenido = Encoding.UTF8.GetBytes(texto);
             TamanoMensaje = Contenido.Length;
+        }
+        public TramasEnvio Disassemble()
+        {
+            var tramas = new TramasEnvio(this);
+            return tramas;
         }
     }
 }

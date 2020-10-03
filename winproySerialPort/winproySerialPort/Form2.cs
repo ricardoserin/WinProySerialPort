@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using winproySerialPort.Controladores;
 
 namespace winproySerialPort
 {
@@ -30,23 +31,25 @@ namespace winproySerialPort
         {
             var ruta = LeerRutaArchivo();
             var archivoEnvio = new ArchivoEnvio(ruta);
-            EventController.Enviar(archivoEnvio);
+            EmmitController.Enviar(archivoEnvio);
         }
 
         private void btnEnviar_Click(object sender, EventArgs e)
         {
             var mensaje = rchMensaje.Text.Trim();
-            EventController.Enviar(mensaje);
+            var mensajeEnvio = new Mensaje(mensaje);
+            EmmitController.Enviar(mensajeEnvio);
             rchMensaje.Clear();
         }
         private void Form2_OnPuertoConfigurado()
         {
             Enabled = true;
-            // Se agregan los métodos que se dispararán cuando ocurran los eventos
-            EventController.Receptor.MessageReceived += EventController_LlegoMensaje;
-            EventController.Receptor.DataFromFileReceived += EventController_InicioRecepcionArchivo;
-            EventController.Emisor.MessageEmmited += EventController_EnvioMensaje;
-            EventController.Emisor.TransmissionStarted += EventController_InicioEnvio;
+            // Se agregan los métodos a los eventos del emisor
+            EmmitController.Emisor.TransmissionStarted += EventController_InicioEnvio;
+            EmmitController.Emisor.MessageEmmited += EventController_EnvioMensaje;
+
+            // EventController.Receptor.MessageReceived += EventController_LlegoMensaje;
+            // EventController.Receptor.DataFromFileReceived += EventController_InicioRecepcionArchivo;
 
             // Establece el nombre del formulario
             Text = Puerto.NombrePuerto;
@@ -58,8 +61,6 @@ namespace winproySerialPort
             Enabled = false;
             ObtenerMensajeDeProceso = new MensajeroDeProceso(MensajeExterno);
             MostrarProgresoEnvio = new MostrarProgreso(mostrarProgreso);
-            pbEnvio.Maximum = 100;
-            pbEnvio.Minimum = 0;
             try
             {
                 var formPortConfig = new FrmSerialPortConfig(false);
@@ -92,11 +93,11 @@ namespace winproySerialPort
         // Fin eventos de envio - recepción
         public void LlenarBarraProgreso()
         {
-            while (EventController.Emisor.Enviando)
+            while (EmmitController.Emisor.Enviando)
             {
-                Invoke(MostrarProgresoEnvio, (int)(EventController.Emisor.ProgresoEnvio * 100), 100);
+                Invoke(MostrarProgresoEnvio, (int)(EmmitController.Emisor.ProgresoEnvio * 100));
             }
-            Invoke(MostrarProgresoEnvio, 100, 100);
+            Invoke(MostrarProgresoEnvio, 100);
             ProcesoMuestraProgreso.Abort();
         }
         // Modificadores de formulario
@@ -120,13 +121,13 @@ namespace winproySerialPort
             string path = openFileDialog1.FileName;
             return path;
         }
-        private string ObtenerRutaGuardado(Archivo archivoLectura = null)
+        private string ObtenerRutaGuardado(Archivo archivoRecepcion = null)
         {
-            if (archivoLectura != null)
+            if (archivoRecepcion != null)
             {
-                saveFileDialog1.InitialDirectory = archivoLectura.Directorio;
-                saveFileDialog1.FileName = $"{archivoLectura.Nombre}-copia";
-                saveFileDialog1.DefaultExt = archivoLectura.Extension;
+                saveFileDialog1.InitialDirectory = archivoRecepcion.Directorio;
+                saveFileDialog1.FileName = $"{archivoRecepcion.Nombre}-copia";
+                saveFileDialog1.DefaultExt = archivoRecepcion.Extension;
                 saveFileDialog1.AddExtension = true;
             }
             saveFileDialog1.ShowDialog();
