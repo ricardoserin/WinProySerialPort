@@ -150,7 +150,7 @@ namespace winproySerialPort
                             TramaInf = TramaInf.Substring(TramaInf.IndexOf('?') + 1, TramaInf.Length - TramaInf.IndexOf('?') - 1);
                             long tam = long.Parse(TramaInf);
                             TramaInf = "";
-                            //MessageBox.Show(TramaInf + "extraidos: " + id + "---" + nombre + "---" + ext + "---" + tipo + "---" + tam);
+                            MessageBox.Show(TramaInf + "info: " + id + "---" + nombre + "---" + ext + "---" + tipo + "---" + tam);
                             //long tam = 261753; //word: 12217 pdf:261753 img: 13607 sql: 297 word2det: 12899
                             IniciaConstruirArchivo(id,nombre,ext,tam,tipo);
                         }
@@ -317,7 +317,7 @@ namespace winproySerialPort
             //byte[] TramaCabeceraInfoArchivo = new byte[5];
             //TramaCabeceraInfoArchivo = ASCIIEncoding.UTF8.GetBytes("AI001");
             //TramaInfoArchivo = ASCIIEncoding.UTF8.GetBytes("prueba prueba prueba");
-            TramaCabeceraEnvio = ASCIIEncoding.UTF8.GetBytes("AI001");
+            TramaCabeceraEnvio = ASCIIEncoding.UTF8.GetBytes("AI00"+archivoEnviar.Id);
             TramaEnvio = ASCIIEncoding.UTF8.GetBytes('?'+archivoEnviar.Nombre + '?' + archivoEnviar.Extension + '?' + archivoEnviar.Tipo + '?' + archivoEnviar.Tamano);
             Enviando();
             while (BufferSalidaVacio == false)
