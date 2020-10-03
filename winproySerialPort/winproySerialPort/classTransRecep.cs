@@ -138,12 +138,21 @@ namespace winproySerialPort
                         if (TipoTramaArchivo.Equals("I"))
                         {
                             string TramaInf = ASCIIEncoding.UTF8.GetString(TramaRecibida, 0, 1019);
+                            TramaInf = TramaInf.Substring(0, TramaInf.IndexOf('@'));
                             //'?' + archivoEnviar.Nombre + '?' + archivoEnviar.Extension + '?' + archivoEnviar.Tipo + '?' + archivoEnviar.Tamano
                             int id = Convert.ToInt16(TramaInf.Substring(2, 3));
-                            string nombre = TramaInf.Substring(6, TramaInf.IndexOf('?',7)-6);
-                            string ext = TramaInf.Substring((5+nombre.Length)+2,3);
-                            long tam = 261753; //word: 12217 pdf:261753 img: 13607 sql: 297 word2det: 12899
-                            IniciaConstruirArchivo(nombre,ext,tam,0);
+                            TramaInf = TramaInf.Substring(TramaInf.IndexOf('?') + 1, TramaInf.Length - TramaInf.IndexOf('?') - 1);
+                            string nombre = TramaInf.Substring(0, TramaInf.IndexOf('?'));
+                            TramaInf = TramaInf.Substring(TramaInf.IndexOf('?') + 1, TramaInf.Length - TramaInf.IndexOf('?') - 1);
+                            string ext = TramaInf.Substring(0, TramaInf.IndexOf('?'));
+                            TramaInf = TramaInf.Substring(TramaInf.IndexOf('?') + 1, TramaInf.Length - TramaInf.IndexOf('?') - 1);
+                            string tipo = TramaInf.Substring(0, TramaInf.IndexOf('?'));
+                            TramaInf = TramaInf.Substring(TramaInf.IndexOf('?') + 1, TramaInf.Length - TramaInf.IndexOf('?') - 1);
+                            long tam = long.Parse(TramaInf);
+                            TramaInf = "";
+                            //MessageBox.Show(TramaInf + "extraidos: " + id + "---" + nombre + "---" + ext + "---" + tipo + "---" + tam);
+                            //long tam = 261753; //word: 12217 pdf:261753 img: 13607 sql: 297 word2det: 12899
+                            IniciaConstruirArchivo(id,nombre,ext,tam,tipo);
                         }
                         else if(TipoTramaArchivo.Equals("D"))
                         {
@@ -391,7 +400,8 @@ namespace winproySerialPort
             LeyendoArchivo.Close();
             FlujoArchivoEnviar.Close();
         }
-        public void IniciaConstruirArchivo(string nombre, string ext, long tam, int id)
+
+        public void IniciaConstruirArchivo(int id, string nombre, string ext, long tam, string tipo)
         {
             //-MessageBox.Show(trama);
             //string nom = trama.Substring(4, trama.IndexOf('?')-1);
@@ -408,6 +418,7 @@ namespace winproySerialPort
             archivoRecibir.Id = id;
             archivoRecibir.Extension = ext;
             archivoRecibir.Tamano = tam;
+            archivoRecibir.Tipo = tipo;
             archivoRecibir.Avance = 0;
         }
         private void construirArchivo()
