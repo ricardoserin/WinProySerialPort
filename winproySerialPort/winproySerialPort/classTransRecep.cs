@@ -142,9 +142,7 @@ namespace winproySerialPort
                             int id = Convert.ToInt16(TramaInf.Substring(2, 3));
                             string nombre = TramaInf.Substring(6, TramaInf.IndexOf('?',7)-6);
                             string ext = TramaInf.Substring((5+nombre.Length)+2,3);
-                            //MessageBox.Show("leng"+TramaInf.Length+"eee"+((TramaInf.Length - TramaInf.LastIndexOf('?')) - 1));
                             long tam = 261753; //word: 12217 pdf:261753 img: 13607 sql: 297 word2det: 12899
-                            //MessageBox.Show("info: " + nombre + '-' + ext + '-' + tam);
                             IniciaConstruirArchivo(nombre,ext,tam,0);
                         }
                         else if(TipoTramaArchivo.Equals("D"))
@@ -222,7 +220,7 @@ namespace winproySerialPort
             //Excepción no controlada: System.InvalidOperationException: 'El puerto está cerrado.'
             try
             {
-                while (!BufferSalidaVacio)
+                while (BufferSalidaVacio==false)
                 {
                     //esperamos
                 }
@@ -301,7 +299,6 @@ namespace winproySerialPort
             archivoEnviar.Id = contArchivos;
             contArchivos += 1;
             //MessageBox.Show("Se enviará: " + '\n' + archivoEnviar.Nombre+'\n' + archivoEnviar.Tamano+ '\n' + archivoEnviar.Id);
-
             procesoEnvioArchivo = new Thread(EnviandoInfoArchivo);
             procesoEnvioArchivo.Start();
         }
