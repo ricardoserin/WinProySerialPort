@@ -96,7 +96,7 @@ namespace winproySerialPort
                 Emisor = MetaDatos[0];
                 var tamano = long.Parse(MetaDatos[1]);
 
-                NumeroDeTramas = (int) Math.Ceiling((double) tamano / TamanoTrama);
+                NumeroDeTramas = (int) Math.Ceiling((double) tamano / 1019);
                 Tramas = new Trama[NumeroDeTramas];
             }
         }

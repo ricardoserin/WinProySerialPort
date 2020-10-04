@@ -53,6 +53,10 @@ namespace winproySerialPort
             while (!tramas.Enviado)
             {
                 ProgresoEnvio = tramas.Progreso();
+                while(!Puerto.BufferDeSalidaVacio)
+                {
+
+                }
                 Puerto.Escribir(tramas.SiguienteTrama());
             }
             OnEnvioTerminado(tramas.DisplayMessage);

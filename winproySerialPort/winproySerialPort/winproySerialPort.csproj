@@ -61,9 +61,7 @@
     <Compile Include="classTransRecep.cs" />
     <Compile Include="Modelos\Cabecera.cs" />
     <Compile Include="Modelos\Emmiter.cs" />
-    <Compile Include="Controladores\EventController.cs" />
     <Compile Include="Modelos\ETipoTrama.cs" />
-    <Compile Include="Modelos\FileType.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
