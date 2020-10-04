@@ -50,6 +50,7 @@
     <Compile Include="Controladores\ArchivoRecepcion.cs" />
     <Compile Include="Controladores\ArchivoEnvio.cs" />
     <Compile Include="Controladores\EmmitController.cs" />
+    <Compile Include="Controladores\ReceiverController.cs" />
     <Compile Include="FrmSerialPortConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -58,8 +59,10 @@
     </Compile>
     <Compile Include="Modelos\Archivo.cs" />
     <Compile Include="classTransRecep.cs" />
-    <Compile Include="Controladores\Emmiter.cs" />
+    <Compile Include="Modelos\Cabecera.cs" />
+    <Compile Include="Modelos\Emmiter.cs" />
     <Compile Include="Controladores\EventController.cs" />
+    <Compile Include="Modelos\ETipoTrama.cs" />
     <Compile Include="Modelos\FileType.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -77,10 +80,10 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modelos\Puerto.cs" />
-    <Compile Include="Controladores\Receiver.cs" />
+    <Compile Include="Modelos\Receiver.cs" />
     <Compile Include="Modelos\Trama.cs" />
-    <Compile Include="Controladores\TramasEnvio.cs" />
-    <Compile Include="Controladores\TramasRecepcion.cs" />
+    <Compile Include="Modelos\TramasEnvio.cs" />
+    <Compile Include="Modelos\TramasRecepcion.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

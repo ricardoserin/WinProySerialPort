@@ -41,5 +41,10 @@ namespace winproySerialPort
                 FlujoArchivo.Close();
             }
         }
+        public void Cerrar()
+        {
+            EscritorBinario.Close();
+            FlujoArchivo.Close();
+        }
     }
 }
