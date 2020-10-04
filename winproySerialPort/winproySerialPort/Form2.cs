@@ -20,7 +20,9 @@ namespace winproySerialPort
         public delegate void MostrarProgreso(int value);
         MostrarProgreso MostrarProgresoEnvio;
 
-        private Thread ProcesoMuestraProgreso;
+        private Thread ProcesoMuestraProgresoEnvio;
+        private Thread ProcesoMuestraProgresoRecepcion;
+        private List<ProgressBar> BarrasRecepcion;
 
         public Form2()
         {
@@ -31,25 +33,25 @@ namespace winproySerialPort
         {
             var ruta = LeerRutaArchivo();
             var archivoEnvio = new ArchivoEnvio(ruta);
-            EmmitController.Enviar(archivoEnvio);
+            EmmitController.Enviar(archivoEnvio, Text);
         }
 
         private void btnEnviar_Click(object sender, EventArgs e)
         {
             var mensaje = rchMensaje.Text.Trim();
             var mensajeEnvio = new Mensaje(mensaje);
-            EmmitController.Enviar(mensajeEnvio);
+            EmmitController.Enviar(mensajeEnvio, Text);
             rchMensaje.Clear();
         }
         private void Form2_OnPuertoConfigurado()
         {
             Enabled = true;
             // Se agregan los métodos a los eventos del emisor
-            EmmitController.Emisor.TransmissionStarted += EventController_InicioEnvio;
-            EmmitController.Emisor.MessageEmmited += EventController_EnvioMensaje;
+            EmmitController.FileTransmissionStarted += EventController_InicioEnvioArchivo;
+            EmmitController.MessageEmmited += EventController_EnvioMensaje;
 
-            // EventController.Receptor.MessageReceived += EventController_LlegoMensaje;
-            // EventController.Receptor.DataFromFileReceived += EventController_InicioRecepcionArchivo;
+            ReceiverController.FileReceptionStarted += EventController_InicioRecepcionArchivo;
+            ReceiverController.MessageReceived += EventController_LlegoMensaje;
 
             // Establece el nombre del formulario
             Text = Puerto.NombrePuerto;
@@ -61,6 +63,7 @@ namespace winproySerialPort
             Enabled = false;
             ObtenerMensajeDeProceso = new MensajeroDeProceso(MensajeExterno);
             MostrarProgresoEnvio = new MostrarProgreso(mostrarProgreso);
+            BarrasRecepcion = new List<ProgressBar>();
             try
             {
                 var formPortConfig = new FrmSerialPortConfig(false);
@@ -72,33 +75,41 @@ namespace winproySerialPort
             }
         }
         // Eventos de envio - recepción
-        private void EventController_InicioEnvio(object o, string mensaje)
+        private void EventController_InicioEnvioArchivo(string mensaje)
         {
-            ProcesoMuestraProgreso = new Thread(LlenarBarraProgreso);
-            ProcesoMuestraProgreso.Start();
+            ProcesoMuestraProgresoEnvio = new Thread(LlenarBarraEnvio);
+            ProcesoMuestraProgresoEnvio.Start();
         }
-        private void EventController_EnvioMensaje(object o, string mensajeEnviado)
+        private void EventController_EnvioMensaje(string mensajeEnviado)
         {
             Invoke(ObtenerMensajeDeProceso, mensajeEnviado, Puerto.NombrePuerto);
         }
-        private void EventController_InicioRecepcionArchivo(object o)
+        private void EventController_InicioRecepcionArchivo(object o, string mensaje)
         {
-            var archivoRecepcion = new ArchivoRecepcion(ObtenerRutaGuardado());
-            EventController.Receptor.Inicializar(archivoRecepcion);
+            ProcesoMuestraProgresoRecepcion = new Thread(LlenarBarraRecepcion);
+            ProcesoMuestraProgresoRecepcion.Start();
         }
         private void EventController_LlegoMensaje(object o, string mensajeRecibido)
         {
             Invoke(ObtenerMensajeDeProceso, mensajeRecibido, "El otro puerto");
         }
         // Fin eventos de envio - recepción
-        public void LlenarBarraProgreso()
+        public void LlenarBarraEnvio()
         {
             while (EmmitController.Emisor.Enviando)
             {
                 Invoke(MostrarProgresoEnvio, (int)(EmmitController.Emisor.ProgresoEnvio * 100));
             }
             Invoke(MostrarProgresoEnvio, 100);
-            ProcesoMuestraProgreso.Abort();
+            ProcesoMuestraProgresoEnvio.Abort();
+        }
+        public void LlenarBarraRecepcion()
+        {
+            var pb = new ProgressBar();
+            pb.Location = new Point(200, 50 + BarrasRecepcion.Count * 50);
+            pb.Visible = true;
+            BarrasRecepcion.Add(pb);
+            ProcesoMuestraProgresoRecepcion.Abort();
         }
         // Modificadores de formulario
         private void MensajeExterno(string mensaje, string emisor)

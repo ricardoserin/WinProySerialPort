@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using winproySerialPort.Modelos;
 
 namespace winproySerialPort
 {
@@ -18,9 +19,9 @@ namespace winproySerialPort
             Contenido = Encoding.UTF8.GetBytes(texto);
             TamanoMensaje = Contenido.Length;
         }
-        public TramasEnvio Disassemble()
+        public TramasEnvio Disassemble(string emisor, int idEnvio)
         {
-            var tramas = new TramasEnvio(this);
+            var tramas = new TramasEnvio(this, idEnvio, emisor);
             return tramas;
         }
     }

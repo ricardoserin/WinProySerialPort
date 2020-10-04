@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using winproySerialPort.Modelos;
 
 namespace winproySerialPort.Controladores
 {
@@ -11,7 +12,35 @@ namespace winproySerialPort.Controladores
     {
         public static Emmiter Emisor { get; private set; }
         public static Queue<TramasEnvio> ColaEnvio { get; set; }
-        public static bool Inicializado = false;
+        public static bool Inicializado { get; set; } = false;
+
+        public delegate void EmmisionHandler(string mensaje);
+
+        public static event EmmisionHandler fileTransmissionStarted;
+        public static event EmmisionHandler messageEmmited;
+
+        public static event EmmisionHandler FileTransmissionStarted
+        {
+            add
+            {
+                fileTransmissionStarted += new EmmisionHandler(value);
+            }
+            remove
+            {
+                fileTransmissionStarted -= value;
+            }
+        }
+        public static event EmmisionHandler MessageEmmited
+        {
+            add
+            {
+                messageEmmited += new EmmisionHandler(value);
+            }
+            remove
+            {
+                messageEmmited -= value;
+            }
+        }
 
         private static Thread procesoEnvio;
         public static void Inicializar(string nombrePuerto)
@@ -26,15 +55,15 @@ namespace winproySerialPort.Controladores
             }
         }
 
-        public static void Enviar(ArchivoEnvio archivoEnvio)
+        public static void Enviar(ArchivoEnvio archivoEnvio, string emisor)
         {
-            var tramas = archivoEnvio.Disassemble();
+            var tramas = archivoEnvio.Disassemble(emisor, ColaEnvio.Count);
             ColaEnvio.Enqueue(tramas);
         }
 
-        public static void Enviar(Mensaje mensaje)
+        public static void Enviar(Mensaje mensaje, string emisor)
         {
-            var tramas = mensaje.Disassemble();
+            var tramas = mensaje.Disassemble(emisor, ColaEnvio.Count);
             ColaEnvio.Enqueue(tramas);
         }
 
@@ -45,9 +74,21 @@ namespace winproySerialPort.Controladores
                 if (!Emisor.Enviando && ColaEnvio.Count > 0)
                 {
                     var tramas = ColaEnvio.Dequeue();
+                    if (tramas.TipoDatos == ETipoTrama.Archivo) OnInicioEnvioArchivo(tramas);
                     Emisor.Transmitir(tramas);
+                    OnMensajeEnviado(tramas);
                 }
             }
+        }
+
+        private static void OnInicioEnvioArchivo(TramasEnvio tramas)
+        {
+            fileTransmissionStarted?.Invoke(tramas.DisplayMessage);
+        }
+
+        private static void OnMensajeEnviado(TramasEnvio tramas)
+        {
+            messageEmmited?.Invoke(tramas.DisplayMessage);
         }
     }
 }

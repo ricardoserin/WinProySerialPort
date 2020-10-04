@@ -15,17 +15,6 @@ namespace winproySerialPort
         public int TamanoDeCabecera { get; set; }
         public int TamanoDeCuerpo { get; set; }
 
-        public Trama(byte[] cuerpo, string cabecera, int tamanoDeTrama = 1024, int tamanoDeCabecera = 5, byte byteDeRelleno = 64)
-        {
-            TamanoDeTrama = tamanoDeTrama;
-            TamanoDeCabecera = tamanoDeCabecera;
-            Relleno = byteDeRelleno;
-            TamanoDeCuerpo = TamanoDeTrama - TamanoDeCabecera;
-            GenerarCabecera(cabecera);
-            GenerarCuerpo(cuerpo);
-            GenerarTramaEnvio();
-        }
-
         public Trama(byte[] contenido, int tamanoDeTrama = 1024, int tamanoDeCabecera = 5, byte byteDeRelleno = 64)
         {
             TamanoDeTrama = tamanoDeTrama;
@@ -42,28 +31,6 @@ namespace winproySerialPort
             Relleno = byteDeRelleno;
             TamanoDeCuerpo = TamanoDeTrama - TamanoDeCabecera;
             Contenido = new byte[TamanoDeTrama];
-        }
-        public void GenerarCabecera(string cabecera)
-        {
-            // Cabecera = Encoding.UTF8.GetBytes(cabecera);
-        }
-        public void GenerarCuerpo(byte[] cuerpo)
-        {
-            /* Cuerpo = new byte[TamanoDeCuerpo];
-            for (int i = 0; i < TamanoDeCuerpo; i++)
-            {
-                if (i < cuerpo.Length) Cuerpo[i] = cuerpo[i];
-                else Cuerpo[i] = Relleno;
-            } */
-        }
-        public void GenerarTramaEnvio()
-        {
-            /*
-            Contenido = new byte[TamanoDeTrama];
-            for (int i = 0; i < TamanoDeTrama; i++)
-            {
-                Contenido[i] = (i >= TamanoDeCabecera) ? Cuerpo[i - TamanoDeCabecera] : Cabecera[i];
-            }*/
         }
         public byte[] ObtenerCabeceraDesdeContenido()
         {
@@ -90,18 +57,33 @@ namespace winproySerialPort
         {
             var temp = new byte[TamanoDeCuerpo];
             var tamanoCuerpoValido = TamanoDeCuerpo;
+            var cuerpo = Contenido.Skip(TamanoDeCabecera).Take(TamanoDeCuerpo).ToArray();
             for (int i = 0; i < TamanoDeCuerpo; i++)
             {
-               /* if (Cuerpo[i] == Relleno)
+                if (cuerpo[i] == Relleno)
                 {
                     tamanoCuerpoValido = i;
                     break;
                 }
-                temp[i] = Cuerpo[i]; */
             }
-            var cuerpoValido = new byte[tamanoCuerpoValido];
-            Array.Copy(temp, cuerpoValido, tamanoCuerpoValido);
+            // var cuerpoValido = new byte[tamanoCuerpoValido];
+            // Array.Copy(temp, cuerpoValido, tamanoCuerpoValido);
+            var cuerpoValido = cuerpo.Take(tamanoCuerpoValido).ToArray();
             return cuerpoValido;
+        }
+
+        public char obtenerTipoDeTrama()
+        {
+            var cabecera = ObtenerCabeceraDesdeContenido();
+            var cabeceraDecodificada = Encoding.UTF8.GetString(cabecera);
+            return cabeceraDecodificada.ElementAt(1);
+        }
+
+        public char obtenerTipoDeDatos()
+        {
+            var cabecera = ObtenerCabeceraDesdeContenido();
+            var cabeceraDecodificada = Encoding.UTF8.GetString(cabecera);
+            return cabeceraDecodificada.ElementAt(0);
         }
     }
 }

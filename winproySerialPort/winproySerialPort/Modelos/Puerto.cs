@@ -58,7 +58,7 @@ namespace winproySerialPort
                 {
                     NombrePuerto = nombrePuerto;
                     puerto = new SerialPort(NombrePuerto, baudios, Parity.Even, 8, StopBits.Two);
-                    TamanoDeTrama = (tamanoDeTrama > 0) ? tamanoDeTrama : int.Parse(ConfigurationManager.AppSettings["tamanoDeTrama"]);
+                    TamanoDeTrama = (tamanoDeTrama > 0) ? tamanoDeTrama : 1024;
                     puerto.Open();
                     return true;
                 } catch
@@ -92,6 +92,17 @@ namespace winproySerialPort
             else if (trama.TamanoDeTrama <= 0) trama.TamanoDeTrama = 1024;
             if (puerto.BytesToRead >= trama.TamanoDeTrama)
                 puerto.Read(trama.Contenido, 0, trama.TamanoDeTrama); // Se escribe el buffer en el contenido de la trama            }
+        }
+
+        public static byte[] Leer(int tamanoTrama = 0)
+        {
+            var tamano = (tamanoTrama > 0) ? tamanoTrama : 1024;
+            var bytes = new byte[tamano];
+            if (puerto.BytesToRead >= tamano)
+            {
+                puerto.Read(bytes, 0, tamano);
+            }
+            return bytes;
         }
     }
 }

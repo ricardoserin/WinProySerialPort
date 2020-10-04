@@ -41,7 +41,7 @@ namespace winproySerialPort
             }
         }
 
-        public Emmiter(string nombrePuerto = "COM1", int baudios = 57600, int tamanoDeTramas = 1024, int tamanoDeCabeceras = 5)
+        public Emmiter(string nombrePuerto = "COM1", int tamanoDeTramas = 1024, int baudios = 57600)
         {
             Puerto.Inicializar(nombrePuerto, baudios, tamanoDeTramas);
             Enviando = false;

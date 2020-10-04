@@ -79,6 +79,7 @@ namespace winproySerialPort
             try
             {
                 EmmitController.Inicializar(puerto);
+                ReceiverController.Inicializar(puerto);
                 Dispose();
                 configurado();
             } catch
