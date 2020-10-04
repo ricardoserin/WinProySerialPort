@@ -15,7 +15,7 @@ namespace winproySerialPort
         public int TamanoTrama { get; set; }
         public FileStream FlujoArchivo { get; set; }
 
-        public ArchivoRecepcion(string path, int tamanoTrama = 1024)
+        public ArchivoRecepcion(string path, int tamanoTrama = 1019)
         {
             NuevoArchivo = new Archivo(path);
             TamanoTrama = tamanoTrama;
@@ -29,11 +29,11 @@ namespace winproySerialPort
             EscritorBinario = new BinaryWriter(FlujoArchivo);
         }
 
-        public void Escribir(byte[] Arreglo, int tamanoTrama = -1)
+        public void Escribir(byte[] Arreglo, int tamanoCuerpo = -1)
         {
             if (NuevoArchivo.Activo)
             {
-                int trama = (tamanoTrama <= 0) ? TamanoTrama : tamanoTrama;
+                int trama = (tamanoCuerpo <= 0) ? TamanoTrama : tamanoCuerpo;
                 EscritorBinario.Write(Arreglo, 0, trama);
             } else
             {

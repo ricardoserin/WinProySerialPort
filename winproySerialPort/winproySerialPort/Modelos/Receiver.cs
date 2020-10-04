@@ -12,7 +12,7 @@ namespace winproySerialPort
 {
     class Receiver
     {
-        public delegate void ReceiveHandler(object obj, string mensaje);
+        public delegate void ReceiveHandler(string mensaje);
         private event ReceiveHandler frameReceived;
         private event ReceiveHandler receptionStarted;
         public bool Recibiendo { get; set; }
@@ -42,7 +42,7 @@ namespace winproySerialPort
         public Receiver(string nombrePuerto = "COM1", int tamanoDeTramas = 1024, int baudios = 57600)
         {
             Puerto.Inicializar(nombrePuerto, tamanoDeTramas);
-            
+            Puerto.DataRecibida += OnTramaRecibida;
         }
         public Trama Recibir()
         {
@@ -51,22 +51,20 @@ namespace winproySerialPort
             {
                 OnRecepcionIniciada();
                 var trama = new Trama(Puerto.Leer(1024));
-                OnTramaRecibida();
                 return trama;
             }
             return null;
         }
 
-        protected virtual void OnTramaRecibida()
+        protected virtual void OnTramaRecibida(object o, SerialDataReceivedEventArgs args)
         {
-            Recibiendo = false;
-            frameReceived?.Invoke(this, "Trama recibida");
+            Recibiendo = true;
+            frameReceived?.Invoke( "Trama recibida");
         }
 
         protected virtual void OnRecepcionIniciada()
         {
-            Recibiendo = true;
-            receptionStarted?.Invoke(this, "Inicio recepción");
+            receptionStarted?.Invoke( "Inicio recepción");
         }
     }
 

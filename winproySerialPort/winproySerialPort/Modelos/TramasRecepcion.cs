@@ -46,7 +46,7 @@ namespace winproySerialPort
 
         private int NumeroDeTramas;
         private Trama[] Tramas;
-        private readonly int TamanoTrama;
+        private readonly int TamanoTrama = 1024;
 
         public TramasRecepcion(Trama tramaInformacion)
         {
@@ -82,7 +82,6 @@ namespace winproySerialPort
 
         private void DecodificarTramaInformacion(Trama tramaCabecera)
         {
-
             var cabecera = new Cabecera(tramaCabecera);
 
             if (cabecera.TipoContenido == ETipoContenido.Cabecera)
@@ -98,7 +97,7 @@ namespace winproySerialPort
                 var tamano = long.Parse(MetaDatos[1]);
 
                 NumeroDeTramas = (int) Math.Ceiling((double) tamano / TamanoTrama);
-                Tramas = new Trama[NumeroDeTramas + 1];
+                Tramas = new Trama[NumeroDeTramas];
             }
         }
 
@@ -113,7 +112,7 @@ namespace winproySerialPort
                 for (int i = 0; i < Tramas.Length; i++)
                 {
                     var cuerpoValido = Tramas[i].ObtenerCuerpoValido();
-                    archivoRecibido.Escribir(cuerpoValido);
+                    archivoRecibido.Escribir(cuerpoValido, cuerpoValido.Length);
                 }
                 archivoRecibido.Cerrar();
                 DisplayMessage = archivoRecibido.NuevoArchivo.Path;

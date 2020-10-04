@@ -49,8 +49,7 @@ namespace winproySerialPort.Controladores
             {
                 Receptor = new Receiver(nombrePuerto);
                 ListaRecepcion = new List<TramasRecepcion>();
-                procesoRecepcion = new Thread(RecibirTramas);
-                procesoRecepcion.Start();
+                Receptor.FrameReceived += Reciever_frameReceived;
                 Inicializado = true;
             }
         }
@@ -79,16 +78,10 @@ namespace winproySerialPort.Controladores
             }
         }
 
-        public static void RecibirTramas()
+        public static void Reciever_frameReceived(string mensaje)
         {
-            while (true)
-            {
-                if (!Receptor.Recibiendo)
-                {
-                    var trama = Receptor.Recibir();
-                    if(trama != null) Recibir(trama);
-                }
-            }
+            var trama = Receptor.Recibir();
+            if(trama != null) Recibir(trama);
         }
 
         private static void OnInicioRecepcionArchivo(TramasRecepcion receptor)

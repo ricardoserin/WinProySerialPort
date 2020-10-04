@@ -57,17 +57,18 @@ namespace winproySerialPort
         {
             var temp = new byte[TamanoDeCuerpo];
             var tamanoCuerpoValido = TamanoDeCuerpo;
+            var cuerpo = Contenido.Skip(TamanoDeCabecera).Take(TamanoDeCuerpo).ToArray();
             for (int i = 0; i < TamanoDeCuerpo; i++)
             {
-               /* if (Cuerpo[i] == Relleno)
+                if (cuerpo[i] == Relleno)
                 {
                     tamanoCuerpoValido = i;
                     break;
                 }
-                temp[i] = Cuerpo[i]; */
             }
-            var cuerpoValido = new byte[tamanoCuerpoValido];
-            Array.Copy(temp, cuerpoValido, tamanoCuerpoValido);
+            // var cuerpoValido = new byte[tamanoCuerpoValido];
+            // Array.Copy(temp, cuerpoValido, tamanoCuerpoValido);
+            var cuerpoValido = cuerpo.Take(tamanoCuerpoValido).ToArray();
             return cuerpoValido;
         }
 
