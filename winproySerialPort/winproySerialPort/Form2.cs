@@ -77,6 +77,7 @@ namespace winproySerialPort
         // Eventos de envio - recepción
         private void EventController_InicioEnvioArchivo(string mensaje)
         {
+            if (ProcesoMuestraProgresoEnvio != null && ProcesoMuestraProgresoEnvio.IsAlive) ProcesoMuestraProgresoEnvio.Abort();
             ProcesoMuestraProgresoEnvio = new Thread(LlenarBarraEnvio);
             ProcesoMuestraProgresoEnvio.Start();
         }

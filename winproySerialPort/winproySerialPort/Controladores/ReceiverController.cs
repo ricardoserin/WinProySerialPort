@@ -42,6 +42,7 @@ namespace winproySerialPort.Controladores
         private static bool Inicializado = false;
         private static Thread procesoRecepcion;
         private static List<TramasRecepcion> ListaRecepcion;
+        private static Queue<Trama> TramasPorProcesar;
 
         public static void Inicializar(string nombrePuerto)
         {
@@ -49,7 +50,10 @@ namespace winproySerialPort.Controladores
             {
                 Receptor = new Receiver(nombrePuerto);
                 ListaRecepcion = new List<TramasRecepcion>();
+                TramasPorProcesar = new Queue<Trama>();
                 Receptor.FrameReceived += Reciever_frameReceived;
+                procesoRecepcion = new Thread(EnsamblarTramas);
+                procesoRecepcion.Start();
                 Inicializado = true;
             }
         }
@@ -81,7 +85,7 @@ namespace winproySerialPort.Controladores
         public static void Reciever_frameReceived(string mensaje)
         {
             var trama = Receptor.Recibir();
-            if(trama != null) Recibir(trama);
+            if(trama != null) TramasPorProcesar.Enqueue(trama);
         }
 
         private static void OnInicioRecepcionArchivo(TramasRecepcion receptor)
@@ -91,6 +95,17 @@ namespace winproySerialPort.Controladores
         private static void OnMensajeRecibido(TramasRecepcion receptor)
         {
             messageReceived?.Invoke(receptor.Emisor, receptor.DisplayMessage);
+        }
+
+        public static void EnsamblarTramas()
+        {
+            while (true)
+            {
+                if (TramasPorProcesar.Count > 0)
+                {
+                    Recibir(TramasPorProcesar.Dequeue());
+                }
+            }
         }
     }
 }
