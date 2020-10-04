@@ -52,6 +52,8 @@ namespace winproySerialPort
                 Tramas[indice] = GenerarTrama(bytesLeidos);
                 indice++;
             }
+
+            archivoEnvio.Cerrar();
         }
 
         public TramasEnvio(Mensaje mensaje, int idEnvio, string nombreEmisor, int tamanoTrama = 1024, int tamanoCabecera = 5)

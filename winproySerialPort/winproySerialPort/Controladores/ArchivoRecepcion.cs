@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Windows.Forms;
 
 namespace winproySerialPort
 {
@@ -25,8 +26,25 @@ namespace winproySerialPort
 
         private void InicializarFlujo()
         {
-            FlujoArchivo = new FileStream(NuevoArchivo.Path, FileMode.Create, FileAccess.Write);
-            EscritorBinario = new BinaryWriter(FlujoArchivo);
+            DialogResult confirmarSobreescritura;
+
+            try
+            {
+                FlujoArchivo = new FileStream(NuevoArchivo.Path, FileMode.CreateNew, FileAccess.Write);
+                EscritorBinario = new BinaryWriter(FlujoArchivo);
+            } catch (IOException ioex)
+            {
+                confirmarSobreescritura = MessageBox.Show("¿El archivo ya existe, desea sobreescribirlo?","Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                if (confirmarSobreescritura == DialogResult.Yes)
+                {
+                    FlujoArchivo = new FileStream(NuevoArchivo.Path, FileMode.Create, FileAccess.Write);
+                    EscritorBinario = new BinaryWriter(FlujoArchivo);
+                } else
+                {
+                    //FlujoArchivo.Close();
+                }
+            }
+            
         }
 
         public void Escribir(byte[] Arreglo, int tamanoCuerpo = -1)

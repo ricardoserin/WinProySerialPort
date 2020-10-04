@@ -81,6 +81,7 @@ namespace winproySerialPort
             if (ProcesoMuestraProgresoEnvio != null && ProcesoMuestraProgresoEnvio.IsAlive) ProcesoMuestraProgresoEnvio.Abort();
             ProcesoMuestraProgresoEnvio = new Thread(LlenarBarraEnvio);
             ProcesoMuestraProgresoEnvio.Start();
+            //labelArchivo.Text = "Archivo: " + openFileDialog1.FileName + "(Enviando)";
         }
         private void EventController_EnvioMensaje(string mensajeEnviado)
         {
@@ -149,13 +150,15 @@ namespace winproySerialPort
             if (value == 100)
             {
                 pbEnvio.Refresh();
-                labelArchivo.Text = "Envio finalizado";
+                //labelArchivo.Text = "Envio finalizado";
+                labelArchivo.Text = "Archivo: " + openFileDialog1.FileName + "(Enviado)";
             }
         }
         private string LeerRutaArchivo()
         {
             openFileDialog1.FileName = "";
             openFileDialog1.ShowDialog();
+            labelArchivo.Text = "Archivo: " + openFileDialog1.FileName + "(Esperando)";
             string path = openFileDialog1.FileName;
             return path;
         }

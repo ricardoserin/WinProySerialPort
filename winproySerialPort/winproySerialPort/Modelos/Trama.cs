@@ -24,14 +24,6 @@ namespace winproySerialPort
             TamanoDeCuerpo = TamanoDeTrama - TamanoDeCabecera;
         }
 
-        public Trama(int tamanoDeTrama = 1024, int tamanoDeCabecera = 5, byte byteDeRelleno = 64)
-        {
-            TamanoDeTrama = tamanoDeTrama;
-            TamanoDeCabecera = tamanoDeCabecera;
-            Relleno = byteDeRelleno;
-            TamanoDeCuerpo = TamanoDeTrama - TamanoDeCabecera;
-            Contenido = new byte[TamanoDeTrama];
-        }
         public byte[] ObtenerCabeceraDesdeContenido()
         {
             
@@ -75,18 +67,5 @@ namespace winproySerialPort
             return cuerpoValido;
         }
 
-        public char obtenerTipoDeTrama()
-        {
-            var cabecera = ObtenerCabeceraDesdeContenido();
-            var cabeceraDecodificada = Encoding.UTF8.GetString(cabecera);
-            return cabeceraDecodificada.ElementAt(1);
-        }
-
-        public char obtenerTipoDeDatos()
-        {
-            var cabecera = ObtenerCabeceraDesdeContenido();
-            var cabeceraDecodificada = Encoding.UTF8.GetString(cabecera);
-            return cabeceraDecodificada.ElementAt(0);
-        }
     }
 }

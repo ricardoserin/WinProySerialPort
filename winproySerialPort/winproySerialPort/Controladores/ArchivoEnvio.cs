@@ -24,16 +24,10 @@ namespace winproySerialPort
 
         private void InicializarFlujo()
         {
-            try
-            {
-                Flujo = new FileStream(ArchivoLeido.Path, FileMode.Open, FileAccess.Read);
-                Tamano = Flujo.Length;
-                Lector = new BinaryReader(Flujo);
-            }
-            catch (ArgumentException aex)
-            {
 
-            }
+            Flujo = new FileStream(ArchivoLeido.Path, FileMode.Open, FileAccess.Read);
+            Tamano = Flujo.Length;
+            Lector = new BinaryReader(Flujo);
             
         }
 
@@ -65,6 +59,12 @@ namespace winproySerialPort
         {
             var tramas = new TramasEnvio(this, idEnvio, emisor);
             return tramas;
+        }
+
+        public void Cerrar()
+        {
+            Lector.Close();
+            Flujo.Close();
         }
     }
 }
