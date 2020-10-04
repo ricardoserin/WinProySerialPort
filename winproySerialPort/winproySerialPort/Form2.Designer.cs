@@ -40,9 +40,10 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(596, 394);
+            this.button1.Location = new System.Drawing.Point(447, 320);
+            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(180, 35);
+            this.button1.Size = new System.Drawing.Size(135, 28);
             this.button1.TabIndex = 0;
             this.button1.Text = "Enviar archivo";
             this.button1.UseVisualStyleBackColor = true;
@@ -54,25 +55,28 @@
             // 
             // rchMensaje
             // 
-            this.rchMensaje.Location = new System.Drawing.Point(12, 333);
+            this.rchMensaje.Location = new System.Drawing.Point(9, 271);
+            this.rchMensaje.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.rchMensaje.Name = "rchMensaje";
-            this.rchMensaje.Size = new System.Drawing.Size(551, 96);
+            this.rchMensaje.Size = new System.Drawing.Size(414, 79);
             this.rchMensaje.TabIndex = 1;
             this.rchMensaje.Text = "";
             // 
             // rchConversacion
             // 
-            this.rchConversacion.Location = new System.Drawing.Point(12, 12);
+            this.rchConversacion.Location = new System.Drawing.Point(11, 9);
+            this.rchConversacion.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.rchConversacion.Name = "rchConversacion";
-            this.rchConversacion.Size = new System.Drawing.Size(551, 304);
+            this.rchConversacion.Size = new System.Drawing.Size(414, 248);
             this.rchConversacion.TabIndex = 2;
             this.rchConversacion.Text = "";
             // 
             // btnEnviar
             // 
-            this.btnEnviar.Location = new System.Drawing.Point(596, 333);
+            this.btnEnviar.Location = new System.Drawing.Point(447, 271);
+            this.btnEnviar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnEnviar.Name = "btnEnviar";
-            this.btnEnviar.Size = new System.Drawing.Size(180, 42);
+            this.btnEnviar.Size = new System.Drawing.Size(135, 34);
             this.btnEnviar.TabIndex = 3;
             this.btnEnviar.Text = "Enviar mensaje";
             this.btnEnviar.UseVisualStyleBackColor = true;
@@ -81,30 +85,33 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(593, 15);
+            this.label1.Location = new System.Drawing.Point(445, 12);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(130, 21);
+            this.label1.Size = new System.Drawing.Size(78, 13);
             this.label1.TabIndex = 4;
             this.label1.Text = "Progreso envio";
             // 
             // pbEnvio
             // 
-            this.pbEnvio.Location = new System.Drawing.Point(596, 39);
+            this.pbEnvio.Location = new System.Drawing.Point(447, 32);
+            this.pbEnvio.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pbEnvio.Name = "pbEnvio";
-            this.pbEnvio.Size = new System.Drawing.Size(180, 32);
+            this.pbEnvio.Size = new System.Drawing.Size(135, 26);
             this.pbEnvio.TabIndex = 5;
             // 
             // Form2
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(600, 366);
             this.Controls.Add(this.pbEnvio);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnEnviar);
             this.Controls.Add(this.rchConversacion);
             this.Controls.Add(this.rchMensaje);
             this.Controls.Add(this.button1);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Form2";
             this.Text = "Form2";
             this.Load += new System.EventHandler(this.Form2_Load);

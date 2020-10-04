@@ -62,7 +62,10 @@ namespace winproySerialPort
             {
                 if (cuerpo[i] == Relleno)
                 {
-                    tamanoCuerpoValido = i;
+                    if (i + 2 < TamanoDeCuerpo && cuerpo[i + 1] == Relleno && cuerpo[i + 2] == Relleno)
+                    {
+                        tamanoCuerpoValido = i;
+                    }
                     break;
                 }
             }
