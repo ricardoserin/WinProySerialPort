@@ -28,25 +28,37 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             this.button1 = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.rchMensaje = new System.Windows.Forms.RichTextBox();
             this.rchConversacion = new System.Windows.Forms.RichTextBox();
             this.btnEnviar = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.labelArchivo = new System.Windows.Forms.Label();
             this.pbEnvio = new System.Windows.Forms.ProgressBar();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(447, 320);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button1.BackColor = System.Drawing.Color.Transparent;
+            this.button1.BackgroundImage = global::winproySerialPort.Properties.Resources.clip;
+            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.button1.FlatAppearance.BorderSize = 0;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.ForeColor = System.Drawing.Color.White;
+            this.button1.Location = new System.Drawing.Point(382, 6);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(135, 28);
+            this.button1.Size = new System.Drawing.Size(48, 48);
             this.button1.TabIndex = 0;
-            this.button1.Text = "Enviar archivo";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // openFileDialog1
@@ -55,68 +67,125 @@
             // 
             // rchMensaje
             // 
-            this.rchMensaje.Location = new System.Drawing.Point(9, 271);
-            this.rchMensaje.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.rchMensaje.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rchMensaje.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rchMensaje.Font = new System.Drawing.Font("Roboto", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rchMensaje.Location = new System.Drawing.Point(5, 11);
+            this.rchMensaje.Margin = new System.Windows.Forms.Padding(0);
             this.rchMensaje.Name = "rchMensaje";
-            this.rchMensaje.Size = new System.Drawing.Size(414, 79);
+            this.rchMensaje.Size = new System.Drawing.Size(377, 48);
             this.rchMensaje.TabIndex = 1;
             this.rchMensaje.Text = "";
             // 
             // rchConversacion
             // 
-            this.rchConversacion.Location = new System.Drawing.Point(11, 9);
-            this.rchConversacion.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.rchConversacion.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rchConversacion.Font = new System.Drawing.Font("Roboto", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rchConversacion.Location = new System.Drawing.Point(9, 9);
+            this.rchConversacion.Margin = new System.Windows.Forms.Padding(2);
             this.rchConversacion.Name = "rchConversacion";
-            this.rchConversacion.Size = new System.Drawing.Size(414, 248);
+            this.rchConversacion.ReadOnly = true;
+            this.rchConversacion.Size = new System.Drawing.Size(487, 422);
             this.rchConversacion.TabIndex = 2;
             this.rchConversacion.Text = "";
             // 
             // btnEnviar
             // 
-            this.btnEnviar.Location = new System.Drawing.Point(447, 271);
-            this.btnEnviar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnEnviar.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnEnviar.BackColor = System.Drawing.Color.Transparent;
+            this.btnEnviar.BackgroundImage = global::winproySerialPort.Properties.Resources.send_icon_solid_01;
+            this.btnEnviar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnEnviar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnEnviar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEnviar.ForeColor = System.Drawing.Color.White;
+            this.btnEnviar.Location = new System.Drawing.Point(434, 6);
+            this.btnEnviar.Margin = new System.Windows.Forms.Padding(2);
             this.btnEnviar.Name = "btnEnviar";
-            this.btnEnviar.Size = new System.Drawing.Size(135, 34);
+            this.btnEnviar.Size = new System.Drawing.Size(50, 48);
             this.btnEnviar.TabIndex = 3;
-            this.btnEnviar.Text = "Enviar mensaje";
-            this.btnEnviar.UseVisualStyleBackColor = true;
+            this.btnEnviar.UseVisualStyleBackColor = false;
             this.btnEnviar.Click += new System.EventHandler(this.btnEnviar_Click);
             // 
-            // label1
+            // labelArchivo
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(445, 12);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(78, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Progreso envio";
+            this.labelArchivo.AutoSize = true;
+            this.labelArchivo.ForeColor = System.Drawing.Color.DarkSlateGray;
+            this.labelArchivo.Location = new System.Drawing.Point(2, 14);
+            this.labelArchivo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelArchivo.Name = "labelArchivo";
+            this.labelArchivo.Size = new System.Drawing.Size(54, 14);
+            this.labelArchivo.TabIndex = 4;
+            this.labelArchivo.Text = "Archivo: ";
             // 
             // pbEnvio
             // 
-            this.pbEnvio.Location = new System.Drawing.Point(447, 32);
-            this.pbEnvio.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pbEnvio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbEnvio.ForeColor = System.Drawing.Color.DarkCyan;
+            this.pbEnvio.Location = new System.Drawing.Point(144, 10);
+            this.pbEnvio.Margin = new System.Windows.Forms.Padding(2);
             this.pbEnvio.Name = "pbEnvio";
-            this.pbEnvio.Size = new System.Drawing.Size(135, 26);
+            this.pbEnvio.Size = new System.Drawing.Size(340, 21);
             this.pbEnvio.TabIndex = 5;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.BackColor = System.Drawing.Color.White;
+            this.groupBox1.Controls.Add(this.pbEnvio);
+            this.groupBox1.Controls.Add(this.labelArchivo);
+            this.groupBox1.ForeColor = System.Drawing.Color.Transparent;
+            this.groupBox1.Location = new System.Drawing.Point(9, 492);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(0);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(0);
+            this.groupBox1.Size = new System.Drawing.Size(486, 36);
+            this.groupBox1.TabIndex = 1;
+            this.groupBox1.TabStop = false;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.BackColor = System.Drawing.Color.White;
+            this.groupBox2.Controls.Add(this.rchMensaje);
+            this.groupBox2.Controls.Add(this.button1);
+            this.groupBox2.Controls.Add(this.btnEnviar);
+            this.groupBox2.Location = new System.Drawing.Point(9, 433);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(0);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(0);
+            this.groupBox2.Size = new System.Drawing.Size(486, 56);
+            this.groupBox2.TabIndex = 4;
+            this.groupBox2.TabStop = false;
             // 
             // Form2
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(600, 366);
-            this.Controls.Add(this.pbEnvio);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.btnEnviar);
+            this.BackColor = System.Drawing.Color.SlateGray;
+            this.ClientSize = new System.Drawing.Size(507, 537);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.rchConversacion);
-            this.Controls.Add(this.rchMensaje);
-            this.Controls.Add(this.button1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Font = new System.Drawing.Font("Roboto", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(2);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Form2";
-            this.Text = "Form2";
+            this.Text = "APP";
             this.Load += new System.EventHandler(this.Form2_Load);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -128,7 +197,9 @@
         private System.Windows.Forms.RichTextBox rchMensaje;
         private System.Windows.Forms.RichTextBox rchConversacion;
         private System.Windows.Forms.Button btnEnviar;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelArchivo;
         private System.Windows.Forms.ProgressBar pbEnvio;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }

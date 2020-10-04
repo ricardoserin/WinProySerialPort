@@ -40,7 +40,11 @@ namespace winproySerialPort
         {
             var mensaje = rchMensaje.Text.Trim();
             var mensajeEnvio = new Mensaje(mensaje);
+            
             EmmitController.Enviar(mensajeEnvio, Text);
+            //rchConversacion.SelectedText = "\nEnviado: \n" + rchMensajes.Text.Trim() + "\n";
+            //rchConversacion.Text+= "\nEnviado: \n" + rchMensajes.Text.Trim()+"\n";
+            //rchMensaje.Text = "";
             rchMensaje.Clear();
         }
         private void Form2_OnPuertoConfigurado()
@@ -92,7 +96,7 @@ namespace winproySerialPort
         }
         private void EventController_LlegoMensaje(object o, string mensajeRecibido)
         {
-            Invoke(ObtenerMensajeDeProceso, mensajeRecibido, "El otro puerto");
+            Invoke(ObtenerMensajeDeProceso, mensajeRecibido, "Recibido");
         }
         // Fin eventos de envio - recepción
         public void LlenarBarraEnvio()
@@ -115,7 +119,20 @@ namespace winproySerialPort
         // Modificadores de formulario
         private void MensajeExterno(string mensaje, string emisor)
         {
-            rchConversacion.Text += $"{emisor}: {mensaje}\n";
+            if (emisor == "Recibido")
+            {
+                rchConversacion.SelectionColor = Color.Black;
+                rchConversacion.SelectionBackColor = Color.LightBlue;
+                rchConversacion.SelectionAlignment = HorizontalAlignment.Left;
+                rchConversacion.SelectionIndent = 32;
+            } else
+            {
+                rchConversacion.SelectionColor = Color.Black;
+                rchConversacion.SelectionBackColor = Color.LightGreen;
+                rchConversacion.SelectionAlignment = HorizontalAlignment.Right;
+                rchConversacion.SelectionRightIndent = 32;
+            }
+            rchConversacion.SelectedText = $"\n{emisor}:\n {mensaje}\n";
         }
         public void mostrarProgreso(int value)
         {
@@ -123,7 +140,7 @@ namespace winproySerialPort
             if (value == 100)
             {
                 pbEnvio.Refresh();
-                label1.Text = "Envio finalizado";
+                labelArchivo.Text = "Envio finalizado";
             }
         }
         private string LeerRutaArchivo()
