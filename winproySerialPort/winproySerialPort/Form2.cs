@@ -42,9 +42,6 @@ namespace winproySerialPort
             var mensajeEnvio = new Mensaje(mensaje);
             
             EmmitController.Enviar(mensajeEnvio, Text);
-            //rchConversacion.SelectedText = "\nEnviado: \n" + rchMensajes.Text.Trim() + "\n";
-            //rchConversacion.Text+= "\nEnviado: \n" + rchMensajes.Text.Trim()+"\n";
-            //rchMensaje.Text = "";
             rchMensaje.Clear();
         }
         private void Form2_OnPuertoConfigurado()
@@ -119,24 +116,36 @@ namespace winproySerialPort
         // Modificadores de formulario
         private void MensajeExterno(string mensaje, string emisor)
         {
-            if (emisor == "Recibido")
+            if (mensaje != null)
             {
-                rchConversacion.SelectionColor = Color.Black;
-                rchConversacion.SelectionBackColor = Color.LightBlue;
-                rchConversacion.SelectionAlignment = HorizontalAlignment.Left;
-                rchConversacion.SelectionIndent = 32;
-            } else
-            {
-                rchConversacion.SelectionColor = Color.Black;
-                rchConversacion.SelectionBackColor = Color.LightGreen;
-                rchConversacion.SelectionAlignment = HorizontalAlignment.Right;
-                rchConversacion.SelectionRightIndent = 32;
+                if (emisor == "Recibido")
+                {
+                    rchConversacion.SelectionColor = Color.Black;
+                    rchConversacion.SelectionBackColor = Color.LightBlue;
+                    rchConversacion.SelectionAlignment = HorizontalAlignment.Left;
+                    rchConversacion.SelectionIndent = 32;
+                }
+                else
+                {
+                    rchConversacion.SelectionColor = Color.Black;
+                    rchConversacion.SelectionBackColor = Color.LightGreen;
+                    rchConversacion.SelectionAlignment = HorizontalAlignment.Right;
+                    rchConversacion.SelectionRightIndent = 32;
+                }
+                rchConversacion.SelectedText = $"\n{emisor}:\n {mensaje}\n";
             }
-            rchConversacion.SelectedText = $"\n{emisor}:\n {mensaje}\n";
         }
         public void mostrarProgreso(int value)
         {
-            pbEnvio.Value = value;
+            try
+            {
+                pbEnvio.Value = value;
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                ProcesoMuestraProgresoEnvio.Abort();
+            }
+            
             if (value == 100)
             {
                 pbEnvio.Refresh();
@@ -162,6 +171,14 @@ namespace winproySerialPort
             saveFileDialog1.ShowDialog();
             string path = saveFileDialog1.FileName;
             return path;
+        }
+
+        private void serialPortToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bool estado = Puerto.Estado;
+            var formPortConfig = new FrmSerialPortConfig(estado);
+            formPortConfig.Configurado += Form2_OnPuertoConfigurado;
+            formPortConfig.Show();
         }
     }
 }

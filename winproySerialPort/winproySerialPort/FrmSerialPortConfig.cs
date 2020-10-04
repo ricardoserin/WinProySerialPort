@@ -90,7 +90,8 @@ namespace winproySerialPort
 
         private void btnDesconectar_Click(object sender, EventArgs e)
         {
-            cerrado();
+            Puerto.Cerrar();
+            //cerrado();
             btnConectar.Enabled = true;
             cbxPuertos.Enabled = true;
             txtBaudios.Enabled = true;

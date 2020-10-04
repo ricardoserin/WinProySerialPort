@@ -33,9 +33,20 @@ namespace winproySerialPort
         private void InicializarMetadatos()
         {
             var fullName = Path.Substring(Path.LastIndexOf('\\') + 1);
+            try
+            {
+                Nombre = fullName.Substring(0, fullName.Length - Extension.Length - 1);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Nombre = "";
+            }
+            catch (NullReferenceException nullex)
+            {
 
+            }
             Extension = fullName.Substring(fullName.LastIndexOf('.') + 1);
-            Nombre = fullName.Substring(0, fullName.Length - Extension.Length - 1);
+            //Nombre = fullName.Substring(0, fullName.Length - Extension.Length - 1);
             Directorio = Path.Substring(0, Path.Length - fullName.Length);
         }
     

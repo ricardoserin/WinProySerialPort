@@ -24,9 +24,17 @@ namespace winproySerialPort
 
         private void InicializarFlujo()
         {
-            Flujo = new FileStream(ArchivoLeido.Path, FileMode.Open, FileAccess.Read);
-            Tamano = Flujo.Length;
-            Lector = new BinaryReader(Flujo);
+            try
+            {
+                Flujo = new FileStream(ArchivoLeido.Path, FileMode.Open, FileAccess.Read);
+                Tamano = Flujo.Length;
+                Lector = new BinaryReader(Flujo);
+            }
+            catch (ArgumentException aex)
+            {
+
+            }
+            
         }
 
         public void Leer(byte[] Arreglo, int bytesALeer = 1024)

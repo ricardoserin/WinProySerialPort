@@ -12,7 +12,8 @@ namespace winproySerialPort
     {
         public static SerialPort puerto { get; private set; }
         public static string NombrePuerto { get; set; }
-        public static bool BufferDeSalidaVacio { 
+        public static bool Estado { get; set; }
+        public static bool BufferDeSalidaVacio {
             get
             {
                 return (puerto.BytesToWrite == 0);
@@ -25,8 +26,8 @@ namespace winproySerialPort
                 return (BufferDeSalidaVacio) ? 0 : puerto.BytesToWrite;
             }
         }
-        public static int TamanoDeTrama 
-        { 
+        public static int TamanoDeTrama
+        {
             get
             {
                 return puerto.ReceivedBytesThreshold;
@@ -60,12 +61,19 @@ namespace winproySerialPort
                     puerto = new SerialPort(NombrePuerto, baudios, Parity.Even, 8, StopBits.Two);
                     TamanoDeTrama = (tamanoDeTrama > 0) ? tamanoDeTrama : 1024;
                     puerto.Open();
+                    Estado = true;
                     return true;
                 } catch
                 {
                     return false;
                 }
             }
+        }
+
+        public static void Cerrar() 
+        {
+            puerto.Close();
+            Estado = false;
         }
 
         public static void Escribir(string mensaje)
