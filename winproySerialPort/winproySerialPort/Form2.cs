@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using winproySerialPort.Controladores;
+using System.IO;
 
 namespace winproySerialPort
 {
@@ -182,6 +183,26 @@ namespace winproySerialPort
             var formPortConfig = new FrmSerialPortConfig(estado);
             formPortConfig.Configurado += Form2_OnPuertoConfigurado;
             formPortConfig.Show();
+        }
+
+        private void directorioDeRecepciónToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string value = string.Empty;
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            DialogResult result;
+            try
+            {
+                fbd.Description = !string.IsNullOrEmpty(path) ? path : "Seleccione carpeta.";
+                fbd.ShowNewFolderButton = true;
+                result = fbd.ShowDialog();
+                value = (result == DialogResult.Yes || result == DialogResult.OK) ? fbd.SelectedPath : string.Empty;
+                fbd.Dispose();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            MessageBox.Show(value);
         }
     }
 }
